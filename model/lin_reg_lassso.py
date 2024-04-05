@@ -12,7 +12,7 @@ target = "SalePrice"
 
 X_train = data_train.drop(["Id", "SalePrice"], axis=1)
 y_train = data_train[target]
-X_test = data_test.drop(["Id"], axis=1)
+X_test = data_test.drop(["Id"], axis=1).select_dtypes(include=["number"])
 
 # Utilizando validação Cruzada para determinar o melhor hiperPâmetro (alpha) para o lasso 
 

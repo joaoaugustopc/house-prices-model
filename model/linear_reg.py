@@ -18,3 +18,9 @@ house_pred = house_price_model.predict(X_test)
 
 #modelo / coeficientes
 print("Predicted house prices: ", house_price_model.coef_)
+
+# Criar um DataFrame com os IDs e as previsões
+result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': house_pred})
+
+# Escrever o DataFrame em um arquivo CSV
+result.to_csv('data/sample_submission_lin.csv', index=False)
