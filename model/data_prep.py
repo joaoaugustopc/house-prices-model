@@ -7,12 +7,12 @@ data_test = pd.read_csv('data/test.csv')
 
 pre_data_train = data_train.select_dtypes(include=["number"])
 pre_data_test = data_test.select_dtypes(include=["number"])
-
-
+"""
 #removendo datas
 cols_to_drop = ['YearBuilt', 'YearRemodAdd', 'MoSold', 'YrSold', 'GarageYrBlt']
 pre_data_train = pre_data_train.drop(cols_to_drop, axis=1)
 pre_data_test = pre_data_test.drop(cols_to_drop, axis=1) 
+"""
 
 
 missing_num_train = pd.DataFrame(pre_data_train.isna().sum().sort_values(ascending=False) / pre_data_train.shape[0], columns=["%_missing_values"])

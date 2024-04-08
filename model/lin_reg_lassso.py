@@ -34,7 +34,7 @@ y_pred = model.predict(X_test)
 
 padrao = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
 
-padrao.to_csv('data/sample_submission_lasso.csv', index=False)
+padrao.to_csv('data/sample_submission_lasso2.csv', index=False)
 
 
 
