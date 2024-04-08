@@ -32,7 +32,9 @@ model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
 
-print(y_pred)
+padrao = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
+
+padrao.to_csv('data/sample_submission_lasso.csv', index=False)
 
 
 
