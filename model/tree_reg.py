@@ -20,7 +20,9 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 # Definindo os parâmetros para a busca em grade
-param_grid = {'max_depth': np.arange(1, 21)}
+param_grid = {'min_samples_leaf': np.arange(1, 21),
+              'max_leaf_nodes': [1460,1450, 1000, 750, 50,100],
+              }
 
 # Criando o modelo
 tree_reg = DecisionTreeRegressor()
@@ -32,16 +34,16 @@ grid_tree = GridSearchCV(tree_reg, param_grid, cv=10, scoring='neg_mean_squared_
 grid_tree.fit(X_train, y_train)
 
 # Imprimindo a profundidade ideal
-print("Profundidade ideal: ", grid_tree.best_params_)
+print(grid_tree.best_params_)
 
 # Treinando o modelo com a profundidade ideal
-tree_reg = DecisionTreeRegressor(max_depth=grid_tree.best_params_['max_depth'])
+tree_reg = DecisionTreeRegressor(**grid_tree.best_params_)
 tree_reg.fit(X_train, y_train)
 y_pred = tree_reg.predict(X_test)
 
 result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
 
-result.to_csv('data/sample_submission_tree.csv', index=False)
+result.to_csv('data/sample_submission_tree4.csv', index=False)
 
 # Exportando o modelo como um arquivo .dot
-tree.export_graphviz(tree_reg, out_file='tree.dot', feature_names=X_train.columns)
+tree.export_graphviz(tree_reg, out_file='arvores/tree4.dot', feature_names=X_train.columns)
