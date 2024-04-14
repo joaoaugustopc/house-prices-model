@@ -33,7 +33,6 @@ grid_tree = GridSearchCV(tree_reg, param_grid, cv=10, scoring='neg_mean_squared_
 # Ajustando o modelo
 grid_tree.fit(X_train, y_train)
 
-# Imprimindo a profundidade ideal
 print(grid_tree.best_params_)
 
 # Treinando o modelo com a profundidade ideal
@@ -46,4 +45,6 @@ result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
 result.to_csv('data/sample_submission_tree4.csv', index=False)
 
 # Exportando o modelo como um arquivo .dot
-tree.export_graphviz(tree_reg, out_file='arvores/tree4.dot', feature_names=X_train.columns)
+tree.export_graphviz(tree_reg, out_file='dot/tree4.dot', feature_names=X_train.columns) 
+
+# dot -Tpdf dot/tree4.dot -o Decision_Tree/tree4.pdf
