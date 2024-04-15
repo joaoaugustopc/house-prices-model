@@ -34,6 +34,9 @@ feature_importances = reg.feature_importances_
 
 print("Predicted house prices: ", feature_importances.ravel())
 
+result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
+result.to_csv('data/sample_submission_grad_boost.csv', index=False)
+
 #print("Predicted house prices: ", reg.score(X_train, y_train))
 
 #relação entre as features e a variável target
