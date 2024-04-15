@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 
 # Definindo os parâmetros para a busca em grade
 param_grid = {'min_samples_leaf': np.arange(1, 21),
-              'max_leaf_nodes': [1460,1450, 1000, 750, 50,100],
+              'min_impurity_decrease': np.linspace(0, 0.5, 20),
               }
 
 # Criando o modelo
@@ -35,16 +35,35 @@ grid_tree.fit(X_train, y_train)
 
 print(grid_tree.best_params_)
 
+
 # Treinando o modelo com a profundidade ideal
 tree_reg = DecisionTreeRegressor(**grid_tree.best_params_)
 tree_reg.fit(X_train, y_train)
 y_pred = tree_reg.predict(X_test)
 
+print (tree_reg.feature_importances_)
+
 result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
 
-result.to_csv('data/sample_submission_tree4.csv', index=False)
+result.to_csv('data/sample_submission_tree2.csv', index=False)
 
 # Exportando o modelo como um arquivo .dot
-tree.export_graphviz(tree_reg, out_file='dot/tree4.dot', feature_names=X_train.columns) 
+tree.export_graphviz(tree_reg, out_file='dot/tree2.dot', feature_names=X_train.columns) 
 
 # dot -Tpdf dot/tree4.dot -o Decision_Tree/tree4.pdf
+
+"""
+{'max_leaf_nodes': 1460, 'min_samples_leaf': 20}
+[0.00000000e+00 6.78319295e-04 1.34898833e-03 7.63214504e-01
+ 4.46289839e-03 5.76543950e-03 2.33831601e-03 2.96548094e-04
+ 1.90864610e-02 0.00000000e+00 4.19949728e-04 3.52346293e-02
+ 1.49327183e-02 6.81113513e-04 0.00000000e+00 1.22170933e-01
+ 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00
+ 0.00000000e+00 6.91171890e-03 0.00000000e+00 0.00000000e+00
+ 0.00000000e+00 1.11843427e-02 1.09307951e-02 0.00000000e+00
+ 1.56389604e-04 0.00000000e+00 0.00000000e+00 0.00000000e+00
+ 0.00000000e+00 0.00000000e+00 1.85934479e-04 0.00000000e+00]
+ 
+"""
+
+# O que mais contribui para a tomada de decisão é o tamanho do lote 
