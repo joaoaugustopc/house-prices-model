@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 data_train = pd.read_csv('data/pre_data_train.csv')
 data_test = pd.read_csv('data/pre_data_test.csv')
 
+print(data_train.head())
+
 target = "SalePrice"
 
 X_train = data_train.drop(["Id", "SalePrice"], axis=1)
@@ -30,17 +32,17 @@ y_pred = reg.predict(X_test)
 
 feature_importances = reg.feature_importances_
 
-print("Predicted house prices: ", feature_importances)
+print("Predicted house prices: ", feature_importances.ravel())
 
-print("Predicted house prices: ", reg.score(X_train, y_train))
+#print("Predicted house prices: ", reg.score(X_train, y_train))
 
 #relação entre as features e a variável target
 sorted_idx = np.argsort(feature_importances)
-pos = np.arange(sorted_idx.shape[0]) + 0.01
+pos = np.arange(sorted_idx.shape[0]) + 0.0001
 fig = plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.barh(pos, feature_importances[sorted_idx], align="center")
 plt.yticks(pos, np.array(X_test.columns)[sorted_idx])
 plt.title("Feature Importance (MDI)")
 
-plt.show()
+plt.savefig('graficos/feature_importance_grad_boosting.png')
