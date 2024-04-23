@@ -1,4 +1,4 @@
-MSSubClass: Identifies the type of dwelling involved in the sale.	
+MSSubClass: Identifies the type of dwelling involved in the sale.  -- 	ok
 
         20	1-STORY 1946 & NEWER ALL STYLES
         30	1-STORY 1945 & OLDER
@@ -17,7 +17,7 @@ MSSubClass: Identifies the type of dwelling involved in the sale.
        180	PUD - MULTILEVEL - INCL SPLIT LEV/FOYER
        190	2 FAMILY CONVERSION - ALL STYLES AND AGES
 
-MSZoning: Identifies the general zoning classification of the sale.
+MSZoning: Identifies the general zoning classification of the sale.  --  ok 
 		
        A	Agriculture
        C	Commercial
@@ -28,29 +28,29 @@ MSZoning: Identifies the general zoning classification of the sale.
        RP	Residential Low Density Park 
        RM	Residential Medium Density
 	
-LotFrontage: Linear feet of street connected to property
+LotFrontage: Linear feet of street connected to property -- ok
 
-LotArea: Lot size in square feet
+LotArea: Lot size in square feet  -- ok
 
-Street: Type of road access to property
+Street: Type of road access to property -- ok  (0 ou 1)
 
-       Grvl	Gravel	
-       Pave	Paved
+       Grvl	Gravel	( 0 )
+       Pave	Paved  ( 1 )
        	
-Alley: Type of alley access to property
+Alley: Type of alley access to property  -- ok 
 
        Grvl	Gravel
        Pave	Paved
        NA 	No alley access
 		
-LotShape: General shape of property
+LotShape: General shape of property  -- ok
 
        Reg	Regular	
-       IR1	Slightly irregular
+       IR1	Slightly irregular 
        IR2	Moderately Irregular
-       IR3	Irregular
+       IR3	Irregular  
        
-LandContour: Flatness of the property
+LandContour: Flatness of the property  -- ok 
 
        Lvl	Near Flat/Level	
        Bnk	Banked - Quick and significant rise from street grade to building
@@ -347,8 +347,8 @@ HeatingQC: Heating quality and condition
 		
 CentralAir: Central air conditioning
 
-       N	No
-       Y	Yes
+       N	No ( 0 )
+       Y	Yes ( 1 ) 
 		
 Electrical: Electrical system
 
@@ -380,11 +380,11 @@ Kitchen: Kitchens above grade
 
 KitchenQual: Kitchen quality
 
-       Ex	Excellent
-       Gd	Good
-       TA	Typical/Average
+       Ex	Excellent ( 0 ) 
+       Gd	Good  ( 2 )
+       TA	Typical/Average ( 3 )
        Fa	Fair
-       Po	Poor
+       Po	Poor 
        	
 TotRmsAbvGrd: Total rooms above grade (does not include bathrooms)
 
@@ -445,17 +445,17 @@ GarageQual: Garage quality
 GarageCond: Garage condition
 
        Ex	Excellent
-       Gd	Good
-       TA	Typical/Average
-       Fa	Fair
+       Gd	Good  ( 2 )
+       TA	Typical/Average ( 4 )
+       Fa	Fair ( 1 )
        Po	Poor
-       NA	No Garage
+       NA	No Garage ( 5 )
 		
 PavedDrive: Paved driveway
 
-       Y	Paved 
-       P	Partial Pavement
-       N	Dirt/Gravel
+       Y	Paved (2)
+       P	Partial Pavement ( 1 )
+       N	Dirt/Gravel ( 0 )
 		
 WoodDeckSF: Wood deck area in square feet
 
