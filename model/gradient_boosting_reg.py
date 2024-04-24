@@ -6,16 +6,16 @@ import matplotlib.pyplot as plt
 
 #importando os dados
 
-data_train = pd.read_csv('data/pre_data_train.csv')
-data_test = pd.read_csv('data/pre_data_test.csv')
+data_train = pd.read_csv('data/pre_data_train_encoded.csv')
+data_test = pd.read_csv('data/pre_data_test_encoded.csv')
 
 print(data_train.head())
 
 target = "SalePrice"
 
-X_train = data_train.drop(["Id", "SalePrice"], axis=1)
+X_train = data_train.drop(["remainder__Id", "SalePrice"], axis=1)
 y_train = data_train[target]
-X_test = data_test.drop(["Id"], axis=1).select_dtypes(include=["number"])
+X_test = data_test.drop(["remainder__Id"], axis=1).select_dtypes(include=["number"])
 
 params = {
     "n_estimators": 500,
@@ -34,8 +34,11 @@ feature_importances = reg.feature_importances_
 
 print("Predicted house prices: ", feature_importances.ravel())
 
-result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
-result.to_csv('data/sample_submission_grad_boost.csv', index=False)
+result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
+
+result['Id'] = result['Id'].astype(int)
+
+result.to_csv('data/sample_submission_grad_boost_encoded.csv', index=False)
 
 #print("Predicted house prices: ", reg.score(X_train, y_train))
 
