@@ -3,8 +3,8 @@ from sklearn.linear_model import ElasticNetCV
 import pandas as pd
 
 
-data_train = pd.read_csv('data/pre_data_train_encoded.csv')
-data_test = pd.read_csv('data/pre_data_test_encoded.csv')
+data_train = pd.read_csv('data/train_prep_encoded.csv')
+data_test = pd.read_csv('data/test_prep_encoded.csv')
 
 target = "SalePrice"
 
@@ -43,4 +43,4 @@ result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
 
 result['Id'] = result['Id'].astype(int)
 
-result.to_csv('submissions/sample_submission_elastic3_encoded.csv', index=False)
+result.to_csv('submissions/sample_submission_elastic_prep_encoded.csv', index=False)

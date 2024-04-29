@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 #importando os dados
 
-data_train = pd.read_csv('data/pre_data_train_encoded.csv')
-data_test = pd.read_csv('data/pre_data_test_encoded.csv')
+data_train = pd.read_csv('data/train_prep_encoded.csv')
+data_test = pd.read_csv('data/test_prep_encoded.csv')
 
 print(data_train.head())
 

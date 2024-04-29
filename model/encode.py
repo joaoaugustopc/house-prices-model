@@ -6,16 +6,16 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
 
 
-data_train = pd.read_csv('dataset/train_scaled.csv')
-data_test = pd.read_csv('dataset/test_scaled.csv')
+data_train = pd.read_csv('dataset/train_prep.csv')
+data_test = pd.read_csv('dataset/test_prep.csv')
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
 # Lista de variáveis categóricas que possuem uma ordem natural
 list_ordinal = ['ExterQual','ExterCond','BsmtQual','BsmtCond','HeatingQC','KitchenQual',
-           'FireplaceQu','GarageQual','GarageCond','PoolQC']
+           'FireplaceQu','GarageQual','GarageCond']
 
-list_lb = ['Street','CentralAir'] # sim ou nao
+list_lb = ['CentralAir'] # sim ou nao
 
 list = list_ordinal + list_lb
 
@@ -63,6 +63,6 @@ test = pd.DataFrame(data_test_encoded,columns = column_trans.get_feature_names_o
 train['SalePrice'] = y_train
 
 
-train.to_csv('data/train_encoded.csv', index=False)
-test.to_csv('data/test_encoded.csv', index=False)
+train.to_csv('data/train_prep_encoded.csv', index=False)
+test.to_csv('data/test_prep_encoded.csv', index=False)
 
