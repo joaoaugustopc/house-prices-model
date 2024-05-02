@@ -339,6 +339,10 @@ data_test[X_test.columns] = X_test_scaled_df
 print(data_train[X_train.columns].mean())
 print(data_train[X_train.columns].std())
 
+#usar zero como valor ausente
+data_train = data_train.fillna(0)
+data_test = data_test.fillna(0)
+
 data_train.to_csv('dataset/train_prep.csv', index=False)
 data_test.to_csv('dataset/test_prep.csv', index=False)
 
