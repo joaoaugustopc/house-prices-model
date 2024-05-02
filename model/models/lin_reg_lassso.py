@@ -15,7 +15,7 @@ y_train = data_train[target]
 X_test = data_test.drop(["Id"], axis=1).select_dtypes(include=["number"])
 
 # Utilizando validação Cruzada para determinar o melhor hiperPâmetro (alpha) para o lasso 
-#teste
+
 param_grid = {'alpha': [0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0]}
 
 lasso = Lasso()
