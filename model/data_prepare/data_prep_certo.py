@@ -4,15 +4,16 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
-data_train = pd.read_csv('dataset/train.csv')
-data_test = pd.read_csv('dataset/test.csv')
+data_train = pd.read_csv('dataset/train_prep_encoded.csv')
+data_test = pd.read_csv('dataset/test_prep_enconded.csv')
 
 X_train = data_train.select_dtypes(include=["number"])
 X_test = data_test.select_dtypes(include=["number"])
 
+#retirando dados
 data_train = data_train.drop(['PoolQC', 'MiscFeature'], axis=1)
-# Normalizando os dados
 
+# Normalizando os dados
 X_train = data_train.drop(columns=['SalePrice','MSSubClass','OverallQual','OverallCond','Id'])
 X_train = X_train.select_dtypes(include=["number"], exclude=["object"])
 
