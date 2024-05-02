@@ -80,6 +80,7 @@ LotFrontage          0.177397
 GarageYrBlt          0.055479
 MasVnrArea           0.005479"""
 
+""" 
 fig = plt.figure(figsize=(15, 10))
 
 fig.add_subplot(2, 2, 1)
@@ -106,6 +107,7 @@ plt.savefig('graficos/LotFrontage.png')
 corr = X_train["LotFrontage"].corr(data_train['SalePrice'])
 
 print(f"Correlation between LotFrontage and SalePrice: {corr}") # 0.35179909657067804
+"""
 
 fig = plt.figure(figsize=(15, 10))
 
@@ -144,7 +146,7 @@ print(X_train['MasVnrArea'].describe())
 
 
 #substituindo valores de ausencia
-X_train = X_train.replace('NA', np.nan)
+#X_train = X_train.replace('NA', np.nan)
 
 """
 X_train = X_train.fillna(X_train.median())
@@ -336,12 +338,11 @@ X_test_scaled_df = pd.DataFrame(X_test_scaled, columns=X_test.columns)
 data_train[X_train.columns] = X_train_scaled_df
 data_test[X_test.columns] = X_test_scaled_df
 
+""" 
 print(data_train[X_train.columns].mean())
 print(data_train[X_train.columns].std())
+"""
 
-#usar zero como valor ausente
-data_train = data_train.fillna(0)
-data_test = data_test.fillna(0)
 
 data_train.to_csv('dataset/train_prep.csv', index=False)
 data_test.to_csv('dataset/test_prep.csv', index=False)
