@@ -1,4 +1,4 @@
-MSSubClass: Identifies the type of dwelling involved in the sale.  -- 	ok
+MSSubClass: Identifies the type of dwelling involved in the sale.  -- ok
 
         20	1-STORY 1946 & NEWER ALL STYLES
         30	1-STORY 1945 & OLDER
@@ -17,7 +17,7 @@ MSSubClass: Identifies the type of dwelling involved in the sale.  -- 	ok
        180	PUD - MULTILEVEL - INCL SPLIT LEV/FOYER
        190	2 FAMILY CONVERSION - ALL STYLES AND AGES
 
-MSZoning: Identifies the general zoning classification of the sale.  --  binariizar!!
+MSZoning: Identifies the general zoning classification of the sale.  -- ok
 		
        A	Agriculture
        C	Commercial
@@ -32,39 +32,39 @@ LotFrontage: Linear feet of street connected to property -- ok
 
 LotArea: Lot size in square feet  -- ok
 
-Street: Type of road access to property -- ok  (0 ou 1) ?
+Street: Type of road access to property -- ok
 
        Grvl	Gravel	( 0 )
        Pave	Paved  ( 1 )
        	
-Alley: Type of alley access to property  -- ?
+Alley: Type of alley access to property  -- ok
 
        Grvl	Gravel
        Pave	Paved
        NA 	No alley access
 		
-LotShape: General shape of property  -- pode criar de 1 a 4 - ok
+LotShape: General shape of property  -- pode criar de 1 a 4 - ?
 
        Reg	Regular	
        IR1	Slightly irregular 
        IR2	Moderately Irregular
        IR3	Irregular  
        
-LandContour: Flatness of the property  -- ??
+LandContour: Flatness of the property  -- ok
 
        Lvl	Near Flat/Level	
        Bnk	Banked - Quick and significant rise from street grade to building
        HLS	Hillside - Significant slope from side to side
        Low	Depression
 		
-Utilities: Type of utilities available -- ??
+Utilities: Type of utilities available -- pensar
 		
        AllPub	All public Utilities (E,G,W,& S)	
        NoSewr	Electricity, Gas, and Water (Septic Tank)
        NoSeWa	Electricity and Gas Only
        ELO	Electricity only	
 	
-LotConfig: Lot configuration ??
+LotConfig: Lot configuration - ok
 
        Inside	Inside lot
        Corner	Corner lot
@@ -72,13 +72,13 @@ LotConfig: Lot configuration ??
        FR2	Frontage on 2 sides of property
        FR3	Frontage on 3 sides of property
 	
-LandSlope: Slope of property -- pode criar de 1 a 3 - ok
+LandSlope: Slope of property -- pode criar de 1 a 3 - pensar
 		
        Gtl	Gentle slope
        Mod	Moderate Slope	
        Sev	Severe Slope
 	
-Neighborhood: Physical locations within Ames city limits ?
+Neighborhood: Physical locations within Ames city limits  - ok
 
        Blmngtn	Bloomington Heights
        Blueste	Bluestem
@@ -106,7 +106,7 @@ Neighborhood: Physical locations within Ames city limits ?
        Timber	Timberland
        Veenker	Veenker
 			
-Condition1: Proximity to various conditions - criar categorias dentro dela
+Condition1: Proximity to various conditions - criar categorias dentro dela - pensar
 	
        Artery	Adjacent to arterial street
        Feedr	Adjacent to feeder street	
@@ -118,7 +118,7 @@ Condition1: Proximity to various conditions - criar categorias dentro dela
        RRNe	Within 200' of East-West Railroad
        RRAe	Adjacent to East-West Railroad
 	
-Condition2: Proximity to various conditions (if more than one is present) - criar categoriais dentro
+Condition2: Proximity to various conditions (if more than one is present) - criar categoriais dentro - pensar
 		
        Artery	Adjacent to arterial street
        Feedr	Adjacent to feeder street	
@@ -130,7 +130,7 @@ Condition2: Proximity to various conditions (if more than one is present) - cria
        RRNe	Within 200' of East-West Railroad
        RRAe	Adjacent to East-West Railroad
 	
-BldgType: Type of dwelling - ?
+BldgType: Type of dwelling - ok
 		
        1Fam	Single-family Detached	
        2FmCon	Two-family Conversion; originally built as one-family dwelling
@@ -138,7 +138,7 @@ BldgType: Type of dwelling - ?
        TwnhsE	Townhouse End Unit
        TwnhsI	Townhouse Inside Unit
 	
-HouseStyle: Style of dwelling - ?
+HouseStyle: Style of dwelling - ok
 	
        1Story	One story
        1.5Fin	One and one-half story: 2nd level finished
@@ -175,11 +175,11 @@ OverallCond: Rates the overall condition of the house -- ok
        2	Poor
        1	Very Poor
 		
-YearBuilt: Original construction date
+YearBuilt: Original construction date - ok
 
-YearRemodAdd: Remodel date (same as construction date if no remodeling or additions)
+YearRemodAdd: Remodel date (same as construction date if no remodeling or additions) - ok
 
-RoofStyle: Type of roof ?
+RoofStyle: Type of roof  - ok 
 
        Flat	Flat
        Gable	Gable
@@ -188,7 +188,7 @@ RoofStyle: Type of roof ?
        Mansard	Mansard
        Shed	Shed
 		
-RoofMatl: Roof material ?
+RoofMatl: Roof material - ok
 
        ClyTile	Clay or Tile
        CompShg	Standard (Composite) Shingle
@@ -199,7 +199,7 @@ RoofMatl: Roof material ?
        WdShake	Wood Shakes
        WdShngl	Wood Shingles
 		
-Exterior1st: Exterior covering on house ?
+Exterior1st: Exterior covering on house - ok
 
        AsbShng	Asbestos Shingles
        AsphShn	Asphalt Shingles
@@ -219,7 +219,7 @@ Exterior1st: Exterior covering on house ?
        Wd Sdng	Wood Siding
        WdShing	Wood Shingles
 	
-Exterior2nd: Exterior covering on house (if more than one material) ?
+Exterior2nd: Exterior covering on house (if more than one material)  - ok
 
        AsbShng	Asbestos Shingles
        AsphShn	Asphalt Shingles
@@ -239,7 +239,7 @@ Exterior2nd: Exterior covering on house (if more than one material) ?
        Wd Sdng	Wood Siding
        WdShing	Wood Shingles
 	
-MasVnrType: Masonry veneer type  - binarizar
+MasVnrType: Masonry veneer type  - ok
 
        BrkCmn	Brick Common
        BrkFace	Brick Face
@@ -265,7 +265,7 @@ ExterCond: Evaluates the present condition of the material on the exterior -- ok
        Fa	Fair
        Po	Poor
 		
-Foundation: Type of foundation ?
+Foundation: Type of foundation - ok
 		
        BrkTil	Brick & Tile
        CBlock	Cinder Block
@@ -328,7 +328,7 @@ BsmtUnfSF: Unfinished square feet of basement area
 
 TotalBsmtSF: Total square feet of basement area
 
-Heating: Type of heating
+Heating: Type of heating - ok
 		
        Floor	Floor Furnace
        GasA	Gas forced warm air furnace
@@ -350,7 +350,7 @@ CentralAir: Central air conditioning - ok
        N	No ( 0 )
        Y	Yes ( 1 ) 
 		
-Electrical: Electrical system
+Electrical: Electrical system - ok - pensar em uma ordem?
 
        SBrkr	Standard Circuit Breakers & Romex
        FuseA	Fuse Box over 60 AMP and all Romex wiring (Average)	
@@ -388,7 +388,7 @@ KitchenQual: Kitchen quality -- ok
        	
 TotRmsAbvGrd: Total rooms above grade (does not include bathrooms)
 
-Functional: Home functionality (Assume typical unless deductions are warranted) - colocar ordem
+Functional: Home functionality (Assume typical unless deductions are warranted) - ?
 
        Typ	Typical Functionality
        Min1	Minor Deductions 1
@@ -410,7 +410,7 @@ FireplaceQu: Fireplace quality -- ok
        Po	Poor - Ben Franklin Stove
        NA	No Fireplace
 		
-GarageType: Garage location
+GarageType: Garage location - ok
 		
        2Types	More than one type of garage
        Attchd	Attached to home
@@ -422,7 +422,7 @@ GarageType: Garage location
 		
 GarageYrBlt: Year garage was built
 		
-GarageFinish: Interior finish of the garage -- colocar ordem
+GarageFinish: Interior finish of the garage -- colocar ordem - ok
 
        Fin	Finished
        RFn	Rough Finished	
@@ -477,7 +477,7 @@ PoolQC: Pool quality - ok
        Fa	Fair
        NA	No Pool
 		
-Fence: Fence quality -- dividir duas categorias - privacy e wood
+Fence: Fence quality -- dividir duas categorias - privacy e wood - ok
 		
        GdPrv	Good Privacy
        MnPrv	Minimum Privacy
@@ -494,7 +494,7 @@ MiscFeature: Miscellaneous feature not covered in other categories -- tirar
        TenC	Tennis Court
        NA	None
 		
-MiscVal: $Value of miscellaneous feature -- indica a totalidade do miscellaneous
+MiscVal: $Value of miscellaneous feature -- indica a totalidade do miscellaneous - ok
 
 MoSold: Month Sold (MM)
 

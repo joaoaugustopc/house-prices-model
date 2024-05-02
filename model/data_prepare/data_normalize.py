@@ -5,12 +5,11 @@ from sklearn.preprocessing import StandardScaler
 data_train = pd.read_csv('dataset/train.csv')
 data_test = pd.read_csv('dataset/test.csv')
 
-X_train = data_train.drop(columns=['SalePrice','MSSubClass','OverallQual','OverallCond','Id'])
+X_train = data_train.drop(columns=['SalePrice','Id'])
 X_train = X_train.select_dtypes(include=["number"], exclude=["object"])
 
-X_test = data_test.drop(columns=['MSSubClass','OverallQual','OverallCond','Id'])
+X_test = data_test.drop(columns=['Id'])
 X_test = X_test.select_dtypes(include=["number"], exclude=["object"])
-
 
 scaler = StandardScaler()
 

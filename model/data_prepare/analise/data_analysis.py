@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
-
-
 data_train = pd.read_csv('dataset/train.csv')
 data_test = pd.read_csv('dataset/test.csv')
 

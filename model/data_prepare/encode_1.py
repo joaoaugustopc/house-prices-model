@@ -6,9 +6,10 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
 
 
-data_train = pd.read_csv('dataset/train.csv')
-data_test = pd.read_csv('dataset/test.csv')
-
+data_train = pd.read_csv('dataset/train_prep.csv')
+data_test = pd.read_csv('dataset/test_prep.csv')
+y_train = data_train['SalePrice']
+data_train.drop(columns=['SalePrice'], inplace=True)
 
 # Lista de variáveis categóricas que possuem uma ordem natural
 list_ordinal = ['ExterQual','ExterCond','BsmtQual','BsmtCond','HeatingQC','KitchenQual',
@@ -16,7 +17,7 @@ list_ordinal = ['ExterQual','ExterCond','BsmtQual','BsmtCond','HeatingQC','Kitch
 
 list_lb = ['CentralAir'] # sim ou nao
 
-list = list_ordinal + list_lb
+list = list_ordinal + list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive','Fence']
 
 
 pre_data_train = data_train.drop(columns=list)
@@ -25,28 +26,12 @@ pre_data_train = pre_data_train.select_dtypes(include=["object"]).columns
 pre_data_test = data_test.drop(columns=list)
 pre_data_test = pre_data_test.select_dtypes(include=["object"]).columns
 
-data_train[list_ordinal] = data_train[list_ordinal].fillna('NA')
-data_test[list_ordinal] = data_test[list_ordinal].fillna('NA')
+data_train[list] = data_train[list].fillna('NA')
+data_test[list] = data_test[list].fillna('NA')
 
-# Transformar as variáveis categóricas em numéricas ordenadas
-categories = [['NA','Po','Fa','TA','Gd','Ex']] * len(list_ordinal)
-
-encoder = OrdinalEncoder(categories=categories)
-
-data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
-data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
-
-
-#criando categorias
-
-list_categories = ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive','Fence']
-data_train[list_categories] = data_train[list_categories].fillna('NA')
-data_test[list_categories] = data_test[list_categories].fillna('NA')
-
-from sklearn.preprocessing import OrdinalEncoder
 
 # Criar listas de categorias
-lotshape_categories = [['IR3', 'IR2', 'IR1', 'Reg']]
+lotshape_categories = [['IR3', 'IR2', 'IR1', 'Reg']] #olhar
 landslope_categories = [['Sev', 'Mod', 'Gtl']]
 bsmtexposure_categories = [['NA', 'No', 'Mn', 'Av', 'Gd']]
 bsmtfintype_categories = [['NA', 'Unf', 'LwQ', 'Rec', 'BLQ', 'ALQ', 'GLQ']]
@@ -91,13 +76,13 @@ data_test['BsmtFinType1'] = bsmtfintype_encoder.transform(data_test[['BsmtFinTyp
 data_train['BsmtFinType2'] = bsmtfintype_encoder.fit_transform(data_train[['BsmtFinType2']])
 data_test['BsmtFinType2'] = bsmtfintype_encoder.transform(data_test[['BsmtFinType2']])
 
-print(data_train.head())
+# Transformar as variáveis categóricas em numéricas ordenadas
+categories = [['NA','Po','Fa','TA','Gd','Ex']] * len(list_ordinal)
 
-"""
+encoder = OrdinalEncoder(categories=categories)
 
-#fim transformação ordinal 
-"""
-
+data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
+data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
 le = LabelEncoder()
 
@@ -105,7 +90,6 @@ for col in list_lb:
     data_train[col] = le.fit_transform(data_train[col].astype(str))
     data_test[col] = le.fit_transform(data_test[col].astype(str))
 
-""" 
 
 column_trans = make_column_transformer(
     (OneHotEncoder(handle_unknown='ignore'), pre_data_train),
@@ -118,10 +102,12 @@ data_train_encoded = column_trans.fit_transform(data_train)
 data_test_encoded = column_trans.transform(data_test) 
 
 #data_train_encoded_dense = data_train_encoded.toarray()
-"""
 
-data_train.drop("Fence", axis=1, inplace=True)
-data_test.drop("Fence", axis=1, inplace=True)
+train = pd.DataFrame(data_train_encoded,columns=column_trans.get_feature_names_out())
+test = pd.DataFrame(data_test_encoded,columns = column_trans.get_feature_names_out())
 
-data_train.to_csv('data/train_prep_encoded.csv', index=False)
-data_test.to_csv('data/test_prep_encoded.csv', index=False)
+train['SalePrice'] = y_train
+
+
+train.to_csv('data/train_prep_encoded.csv', index=False)
+test.to_csv('data/test_prep_encoded.csv', index=False)
