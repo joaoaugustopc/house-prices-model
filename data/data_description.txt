@@ -17,7 +17,7 @@ MSSubClass: Identifies the type of dwelling involved in the sale.  -- 	ok
        180	PUD - MULTILEVEL - INCL SPLIT LEV/FOYER
        190	2 FAMILY CONVERSION - ALL STYLES AND AGES
 
-MSZoning: Identifies the general zoning classification of the sale.  --  ok 
+MSZoning: Identifies the general zoning classification of the sale.  --  binariizar!!
 		
        A	Agriculture
        C	Commercial
@@ -37,34 +37,34 @@ Street: Type of road access to property -- ok  (0 ou 1)
        Grvl	Gravel	( 0 )
        Pave	Paved  ( 1 )
        	
-Alley: Type of alley access to property  -- ok 
+Alley: Type of alley access to property  -- binariizar!!
 
        Grvl	Gravel
        Pave	Paved
        NA 	No alley access
 		
-LotShape: General shape of property  -- ok
+LotShape: General shape of property  -- pode criar de 0 a 4 !!
 
        Reg	Regular	
        IR1	Slightly irregular 
        IR2	Moderately Irregular
        IR3	Irregular  
        
-LandContour: Flatness of the property  -- ok 
+LandContour: Flatness of the property  -- ??
 
        Lvl	Near Flat/Level	
        Bnk	Banked - Quick and significant rise from street grade to building
        HLS	Hillside - Significant slope from side to side
        Low	Depression
 		
-Utilities: Type of utilities available
+Utilities: Type of utilities available -- ??
 		
        AllPub	All public Utilities (E,G,W,& S)	
        NoSewr	Electricity, Gas, and Water (Septic Tank)
        NoSeWa	Electricity and Gas Only
        ELO	Electricity only	
 	
-LotConfig: Lot configuration
+LotConfig: Lot configuration ??
 
        Inside	Inside lot
        Corner	Corner lot
@@ -72,7 +72,7 @@ LotConfig: Lot configuration
        FR2	Frontage on 2 sides of property
        FR3	Frontage on 3 sides of property
 	
-LandSlope: Slope of property
+LandSlope: Slope of property -- pode criar de 1 a 3
 		
        Gtl	Gentle slope
        Mod	Moderate Slope	
@@ -149,7 +149,7 @@ HouseStyle: Style of dwelling
        SFoyer	Split Foyer
        SLvl	Split Level
 	
-OverallQual: Rates the overall material and finish of the house
+OverallQual: Rates the overall material and finish of the house -- colocar
 
        10	Very Excellent
        9	Excellent
@@ -162,7 +162,7 @@ OverallQual: Rates the overall material and finish of the house
        2	Poor
        1	Very Poor
 	
-OverallCond: Rates the overall condition of the house
+OverallCond: Rates the overall condition of the house -- colocar
 
        10	Very Excellent
        9	Excellent
@@ -239,7 +239,7 @@ Exterior2nd: Exterior covering on house (if more than one material)
        Wd Sdng	Wood Siding
        WdShing	Wood Shingles
 	
-MasVnrType: Masonry veneer type
+MasVnrType: Masonry veneer type -- foi!!
 
        BrkCmn	Brick Common
        BrkFace	Brick Face
@@ -247,9 +247,9 @@ MasVnrType: Masonry veneer type
        None	None
        Stone	Stone
 	
-MasVnrArea: Masonry veneer area in square feet
+MasVnrArea: Masonry veneer area in square feet -- foi!!
 
-ExterQual: Evaluates the quality of the material on the exterior 
+ExterQual: Evaluates the quality of the material on the exterior  -- colocar
 		
        Ex	Excellent
        Gd	Good
@@ -257,7 +257,7 @@ ExterQual: Evaluates the quality of the material on the exterior
        Fa	Fair
        Po	Poor
 		
-ExterCond: Evaluates the present condition of the material on the exterior
+ExterCond: Evaluates the present condition of the material on the exterior -- colocar
 		
        Ex	Excellent
        Gd	Good
@@ -274,7 +274,7 @@ Foundation: Type of foundation
        Stone	Stone
        Wood	Wood
 		
-BsmtQual: Evaluates the height of the basement
+BsmtQual: Evaluates the height of the basement -- colocar
 
        Ex	Excellent (100+ inches)	
        Gd	Good (90-99 inches)
@@ -283,7 +283,7 @@ BsmtQual: Evaluates the height of the basement
        Po	Poor (<70 inches
        NA	No Basement
 		
-BsmtCond: Evaluates the general condition of the basement
+BsmtCond: Evaluates the general condition of the basement -- colocar
 
        Ex	Excellent
        Gd	Good
@@ -292,7 +292,7 @@ BsmtCond: Evaluates the general condition of the basement
        Po	Poor - Severe cracking, settling, or wetness
        NA	No Basement
 	
-BsmtExposure: Refers to walkout or garden level walls
+BsmtExposure: Refers to walkout or garden level walls -- colocar
 
        Gd	Good Exposure
        Av	Average Exposure (split levels or foyers typically score average or above)	
@@ -300,7 +300,7 @@ BsmtExposure: Refers to walkout or garden level walls
        No	No Exposure
        NA	No Basement
 	
-BsmtFinType1: Rating of basement finished area
+BsmtFinType1: Rating of basement finished area -- colocar
 
        GLQ	Good Living Quarters
        ALQ	Average Living Quarters
@@ -312,7 +312,7 @@ BsmtFinType1: Rating of basement finished area
 		
 BsmtFinSF1: Type 1 finished square feet
 
-BsmtFinType2: Rating of basement finished area (if multiple types)
+BsmtFinType2: Rating of basement finished area (if multiple types) -- colocar
 
        GLQ	Good Living Quarters
        ALQ	Average Living Quarters
@@ -337,7 +337,7 @@ Heating: Type of heating
        OthW	Hot water or steam heat other than gas
        Wall	Wall furnace
 		
-HeatingQC: Heating quality and condition
+HeatingQC: Heating quality and condition -- colocar
 
        Ex	Excellent
        Gd	Good
@@ -378,7 +378,7 @@ Bedroom: Bedrooms above grade (does NOT include basement bedrooms)
 
 Kitchen: Kitchens above grade
 
-KitchenQual: Kitchen quality
+KitchenQual: Kitchen quality -- colocar
 
        Ex	Excellent ( 0 ) 
        Gd	Good  ( 2 )
@@ -399,9 +399,9 @@ Functional: Home functionality (Assume typical unless deductions are warranted)
        Sev	Severely Damaged
        Sal	Salvage only
 		
-Fireplaces: Number of fireplaces
+Fireplaces: Number of fireplaces -- ok
 
-FireplaceQu: Fireplace quality
+FireplaceQu: Fireplace quality -- ok
 
        Ex	Excellent - Exceptional Masonry Fireplace
        Gd	Good - Masonry Fireplace in main level
@@ -422,7 +422,7 @@ GarageType: Garage location
 		
 GarageYrBlt: Year garage was built
 		
-GarageFinish: Interior finish of the garage
+GarageFinish: Interior finish of the garage -- colocar (0 a 4)
 
        Fin	Finished
        RFn	Rough Finished	
@@ -433,7 +433,7 @@ GarageCars: Size of garage in car capacity
 
 GarageArea: Size of garage in square feet
 
-GarageQual: Garage quality
+GarageQual: Garage quality -- colocar
 
        Ex	Excellent
        Gd	Good
@@ -442,7 +442,7 @@ GarageQual: Garage quality
        Po	Poor
        NA	No Garage
 		
-GarageCond: Garage condition
+GarageCond: Garage condition -- colocar
 
        Ex	Excellent
        Gd	Good  ( 2 )
@@ -477,7 +477,7 @@ PoolQC: Pool quality
        Fa	Fair
        NA	No Pool
 		
-Fence: Fence quality
+Fence: Fence quality 
 		
        GdPrv	Good Privacy
        MnPrv	Minimum Privacy

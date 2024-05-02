@@ -60,9 +60,8 @@ plt.savefig('graficos/BoxPlot_missing_Categ.png')
 
 """
 
-# Excluir as variáveis ['PoolQC', 'MiscFeature' e 'Fence']
-data_train = data_train.drop(['PoolQC', 'MiscFeature', 'Fence','Alley'], axis=1)
-data_test = data_test.drop(['PoolQC', 'MiscFeature', 'Fence','Alley'], axis=1)
+# Excluir as variáveis ['PoolQC] -> como já tem área (poolarea) e não temos todos os tipos dessa caracteristica, tirar / miscFeature -> como é uma coisa extra, o tipo de adicional vai influenciar diretamente no preço, deixar somente o miscValue
+data_train = data_train.drop(['PoolQC', 'MiscFeature'], axis=1)
 
 # Variáveis numéricas
 X_train = data_train.select_dtypes(include=["number"])
@@ -126,8 +125,10 @@ fig.add_subplot(2, 2, 2)
 sns.histplot(X_train['MasVnrArea'], kde=True)
 plt.title(' MasVnrArea distribuition ')
 
+"""
 mean = X_train['MasVnrArea'].mean()
 median = X_train['MasVnrArea'].median() 
+"""
 
 mean_line = plt.axvline(mean, color='r', linestyle='--')
 median_line = plt.axvline(median, color='g', linestyle='-')
@@ -141,11 +142,14 @@ print(X_train['LotFrontage'].describe())
 print(X_train['GarageYrBlt'].describe())
 print(X_train['MasVnrArea'].describe())
 
-X_train = X_train.replace('NA', np.nan)
-X_test = X_test.replace('NA', np.nan)
 
+#substituindo valores de ausencia
+X_train = X_train.replace('NA', np.nan)
+
+"""
 X_train = X_train.fillna(X_train.median())
 X_test = X_test.fillna(X_train.median())
+"""
 
 data_train[X_train.columns] = X_train
 data_test[X_test.columns] = X_test
@@ -231,6 +235,7 @@ plt.tight_layout()
 plt.savefig('graficos/boxplot_variaveis_chave.png')
 """
 
+""" 
 for i in range(0, len(variaveis_chave)):
     fig.add_subplot(4, 3, i+1)
     sns.histplot(data_train[variaveis_chave.index[i]], kde=True)
@@ -243,6 +248,7 @@ for i in range(0, len(variaveis_chave)):
 
 plt.tight_layout()
 plt.savefig('graficos/hist_variaveis_chave.png')
+"""
 
 corr = numeric_features.drop('SalePrice', axis=1).corr()
 
@@ -255,8 +261,10 @@ plt.savefig('graficos/heatmap_correlação.png')
 
 # Remover '1stFlrSF', 'TotRmsAbvGrd' e 'GarageArea' por terem alta correlação com outras variáveis ( teste para regressao linear )
 
+""" 
 data_train = data_train.drop(['1stFlrSF', 'TotRmsAbvGrd', 'GarageArea'], axis=1)
 data_test = data_test.drop(['1stFlrSF', 'TotRmsAbvGrd', 'GarageArea'], axis=1)
+"""
 
 # dados categóricos
 
@@ -283,10 +291,6 @@ for i in range(0, len(categorical_features.columns)):
 plt.tight_layout()
 
 plt.savefig('graficos/countplot_categ.png')
-
-# Remover Utilities, condition2, Heating, Street, functional
-data_train = data_train.drop(['Utilities', 'Condition2', 'Heating', 'Street', 'Functional'], axis=1)
-data_test = data_test.drop(['Utilities', 'Condition2', 'Heating', 'Street', 'Functional'], axis=1)
 
 # Aplicando log na variável 'SalePrice' e comparando a distribuição
 #data_train['SalePrice'] = np.log1p(data_train['SalePrice'])
@@ -320,7 +324,6 @@ X_train = X_train.select_dtypes(include=["number"], exclude=["object"])
 X_test = data_test.drop(columns=['MSSubClass','OverallQual','OverallCond','Id'])
 X_test = X_test.select_dtypes(include=["number"], exclude=["object"])
 
-
 scaler = StandardScaler()
 
 X_train_scaled = scaler.fit_transform(X_train)
@@ -335,7 +338,6 @@ data_test[X_test.columns] = X_test_scaled_df
 
 print(data_train[X_train.columns].mean())
 print(data_train[X_train.columns].std())
-
 
 data_train.to_csv('dataset/train_prep.csv', index=False)
 data_test.to_csv('dataset/test_prep.csv', index=False)
