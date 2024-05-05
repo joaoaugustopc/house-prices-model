@@ -1,21 +1,21 @@
 import pandas as pd
 import numpy as np
 
+# Imputação dos dados númericos, pois os categoricos foram codificados e os NA representam uma categoria
+
 # variáveis categóricas que possui valores faltantes sem explicação : 
-# MasVnrType: Masonry veneer type
-# MasVnrArea: Masonry veneer area in square feet ----> Regrediu alguns valores negativos para alguns NA, levando a crer que não possui masonry veneer (MasVnrType = None)
-# LotFrontage: Linear feet of street connected to property ok 
-# Electrical: Electrical system
-# Mszoning : Identifies the general zoning classification of the sale. ( TESTE APENAS )
-# KitchenQual: Kitchen quality ( TESTE APENAS )
+# MasVnrType: Masonry veneer type ( categoria "nan" = None e NA )
+# MasVnrArea: Masonry veneer area in square feet OK ----> Regrediu alguns valores negativos para alguns NA, levando a crer que não possui masonry veneer (MasVnrType = None)
+# LotFrontage: Linear feet of street connected to property OK --> Regrediu valores coerentes e positivos para os NA
+# Electrical: Electrical system  --> Possui uma categoria "nan" que representa um valor faltante, mesmo o Nan nao sendo uma informação
+# Mszoning : Identifies the general zoning classification of the sale. ( TESTE APENAS ) --> Valor faltante não representa uma categoria, mas esta codificado quando todas as categorias é 0
+# KitchenQual: Kitchen quality ( TESTE APENAS ) ->  Valor faltante = 0, uma linha apenas
 
 
 data_train = pd.read_csv('dataset/train_encoded.csv')
 data_test = pd.read_csv('dataset/test_encoded.csv')
 
-data_nums = data_train.select_dtypes(include=["number"], exclude=["object"])
-
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
+missing_data_nums = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
 
 print("Missing values in train data")
 print(missing_data_nums[missing_data_nums != 0.0])
@@ -60,9 +60,9 @@ for col in list_missing_cols:
 
     data_train.loc[data_train[col].isna(), col] = y_pred 
 
-data_nums = data_train.select_dtypes(include=["number"], exclude=["object"])
+data_train = data_train.select_dtypes(include=["number"], exclude=["object"])
 
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
+missing_data_nums = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
 
 print("Missing values in train data")
 print(missing_data_nums[missing_data_nums != 0.0])
@@ -72,9 +72,9 @@ data_train.to_csv('dataset/train_imputed.csv', index=False)
 
 # Para o conjunto de teste, vamos fazer a mesma coisa
 """
-data_nums = data_test.select_dtypes(include=["number"], exclude=["object"])
+data_train = data_test.select_dtypes(include=["number"], exclude=["object"])
 
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
+missing_data_nums = data_train.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
 
 print("Missing values in test data")
 print(missing_data_nums[missing_data_nums != 0.0])

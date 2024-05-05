@@ -6,19 +6,22 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
 
 
-data_train = pd.read_csv('dataset/train.csv')
-data_test = pd.read_csv('dataset/test.csv')
+data_train = pd.read_csv('dataset/train.csv',na_values=['NA'])
+data_test = pd.read_csv('dataset/test.csv',na_values=['NA'])
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
-# Lista de variáveis categóricas que possuem uma ordem natural
-list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond'] # NA, Po, Fa, TA, Gd, Ex
+data_train['MasVnrType'] = data_train['MasVnrType'].replace('None', 'NoMasVnr')
+data_test['MasVnrType'] = data_test['MasVnrType'].replace('None', 'NoMasVnr')
 
-list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex
+# Lista de variáveis categóricas que possuem uma ordem natural
+list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond','ExterQual','ExterCond','HeatingQC','KitchenQual'] # NA, Po, Fa, TA, Gd, Ex
+
+#list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
 
 list_lb = ['CentralAir','Street'] # Sim ou não / Paved ou Gravel
 
-list = list_ordinal+ list_ordinal2 + list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive','Fence']
+list = list_ordinal + list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive','Fence']
 
 
 pre_data_train = data_train.drop(columns=list)
@@ -79,23 +82,18 @@ data_test['BsmtFinType2'] = bsmtfintype_encoder.transform(data_test[['BsmtFinTyp
 
 # Transformar as variáveis categóricas em numéricas ordenadas
 categories = [['NA','Po','Fa','TA','Gd','Ex']] * len(list_ordinal)
-categories2 = [['Po','Fa','TA','Gd','Ex']] * len(list_ordinal2)
 
 encoder = OrdinalEncoder(categories=categories)
 
 data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
 data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
-encoder2 = OrdinalEncoder(categories=categories2, handle_unknown= 'use_encoded_value', unknown_value=-1)
-
-data_train[list_ordinal2] = encoder2.fit_transform(data_train[list_ordinal2])
-data_test[list_ordinal2] = encoder2.transform(data_test[list_ordinal2])
-
 le = LabelEncoder()
 
 for col in list_lb:
     data_train[col] = le.fit_transform(data_train[col].astype(str))
     data_test[col] = le.fit_transform(data_test[col].astype(str))
+
 
 
 column_trans = make_column_transformer(
