@@ -21,9 +21,9 @@ print("Missing values in train data")
 print(missing_data_nums[missing_data_nums != 0.0])
 
 """Missing values in train data
-LotFrontage    0.177397
-GarageYrBlt    0.055479  NA pois nao tem garagem - > substituir por 0
-MasVnrArea     0.005479
+LotFrontage    0.177397 // tem que ter info
+GarageYrBlt    0.055479  // NA pois nao tem garagem - > substituir por 0
+MasVnrArea     0.005479 // pode não ter info, relação entre none e NA
 dtype: float64"""
 
 # Imputing missing values
@@ -68,7 +68,7 @@ print("Missing values in train data")
 print(missing_data_nums[missing_data_nums != 0.0])
 
 
-data_train.to_csv('dataset/train_imputed.csv', index=False)
+data_train.to_csv('dataset/train_imputed_linear.csv', index=False)
 
 # Para o conjunto de teste, vamos fazer a mesma coisa
 """

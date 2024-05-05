@@ -2,41 +2,23 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-#normalizar os dados com ordem e numericos - StandardScaler, sem ser one hot encoder
+# Normalizar os dados com ordem e numéricos - não one hot encoder
 
-data_train = pd.read_csv('dataset/train.csv')
-data_test = pd.read_csv('dataset/test.csv')
+data_train = pd.read_csv('dataset/train_imputed_KNeighbors.csv')
+#data_test = pd.read_csv('dataset/test.csv') # colocar o nome do arquivo que contém os dados de teste
 
-X_train = data_train.drop(columns=['SalePrice','Id', ])
-X_train = X_train.select_dtypes(include=["number"], exclude=["object"])
-
-#colunas binárias
-cols_to_drop = data_train.filter(regex='onehotencoder').columns
+# Colunas binárias
+cols_to_drop = data_train.filter(regex='onehotencoder').columns.tolist() + ["SalePrice"]
 print(cols_to_drop)
-data_train = data_train.drop(columns=cols_to_drop)
-# Fazer o mesmo para data_test
-cols_to_drop = data_test.filter(regex='onehotencoder').columns
-data_test = data_test.drop(columns=cols_to_drop)
 
-X_test = data_test.drop(columns=['Id'])
-X_test = X_test.select_dtypes(include=["number"], exclude=["object"])
+# Selecionar as colunas para normalizar
+cols_to_scale = data_train.columns.difference(cols_to_drop)
 
 scaler = StandardScaler()
 
-X_train_scaled = scaler.fit_transform(X_train)
-
-X_test_scaled = scaler.transform(X_test)
-
-X_train_scaled_df = pd.DataFrame(X_train_scaled, columns=X_train.columns)
-X_test_scaled_df = pd.DataFrame(X_test_scaled, columns=X_test.columns)
-
-data_train[X_train.columns] = X_train_scaled_df
-data_test[X_test.columns] = X_test_scaled_df
-
-print(data_train[X_train.columns].mean())
-print(data_train[X_train.columns].std())
-
+# Normalizar as colunas selecionadas
+data_train[cols_to_scale] = scaler.fit_transform(data_train[cols_to_scale])
+#data_test[cols_to_scale] = scaler.transform(data_test[cols_to_scale])  # Use o mesmo scaler para os dados de teste
 
 data_train.to_csv('dataset/train_scaled.csv', index=False)
-data_test.to_csv('dataset/test_scaled.csv', index=False)
-
+#data_test.to_csv('dataset/test_scaled.csv', index=False)
