@@ -11,10 +11,13 @@ data_test = pd.read_csv('dataset/test.csv', na_values=['NA'])
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
+data_train['MasVnrType'] = data_train['MasVnrType'].replace('None', 'NoMasVnr')
+data_test['MasVnrType'] = data_test['MasVnrType'].replace('None', 'NoMasVnr')
+
 # Lista de variáveis categóricas que possuem uma ordem natural padronizada
 list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond'] # NA, Po, Fa, TA, Gd, Ex
 
-list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex
+#list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
 
 list_lb = ['CentralAir','Street'] # Sim ou não / Paved ou Gravel
 
@@ -74,7 +77,6 @@ data_test['BsmtFinType2'] = bsmtfintype_encoder.transform(data_test[['BsmtFinTyp
 
 # Transformar as variáveis categóricas em numéricas ordenadas
 categories = [['NA','Po','Fa','TA','Gd','Ex']] * len(list_ordinal)
-categories2 = [['Po','Fa','TA','Gd','Ex']] * len(list_ordinal2)
 
 encoder = OrdinalEncoder(categories=categories)
 
@@ -93,6 +95,7 @@ le = LabelEncoder()
 for col in list_lb:
     data_train[col] = le.fit_transform(data_train[col].astype(str))
     data_test[col] = le.fit_transform(data_test[col].astype(str))
+
 
 
 column_trans = make_column_transformer(
