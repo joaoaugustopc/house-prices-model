@@ -3,8 +3,8 @@ import numpy as np
 
 # variáveis categóricas que possui valores faltantes sem explicação : 
 # MasVnrType: Masonry veneer type
-# MasVnrArea: Masonry veneer area in square feet
-# LotFrontage: Linear feet of street connected to property
+# MasVnrArea: Masonry veneer area in square feet ----> Regrediu alguns valores negativos para alguns NA, levando a crer que não possui masonry veneer (MasVnrType = None)
+# LotFrontage: Linear feet of street connected to property ok 
 # Electrical: Electrical system
 # Mszoning : Identifies the general zoning classification of the sale. ( TESTE APENAS )
 # KitchenQual: Kitchen quality ( TESTE APENAS )
@@ -60,11 +60,18 @@ for col in list_missing_cols:
 
     data_train.loc[data_train[col].isna(), col] = y_pred 
 
+data_nums = data_train.select_dtypes(include=["number"], exclude=["object"])
 
-#data_train.to_csv('dataset/train_imputed.csv', index=False)
+missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
+
+print("Missing values in train data")
+print(missing_data_nums[missing_data_nums != 0.0])
+
+
+data_train.to_csv('dataset/train_imputed.csv', index=False)
 
 # Para o conjunto de teste, vamos fazer a mesma coisa
-
+"""
 data_nums = data_test.select_dtypes(include=["number"], exclude=["object"])
 
 missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
@@ -72,6 +79,7 @@ missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data
 print("Missing values in test data")
 print(missing_data_nums[missing_data_nums != 0.0])
 
+"""
 """Missing values in test data"""
 # LotFrontage    0.155586
 # GarageYrBlt    0.053461  NA significa que nao tem garagem 
@@ -85,6 +93,7 @@ print(missing_data_nums[missing_data_nums != 0.0])
 # BsmtFinSF2     0.000685  Na significa que nao tem porao
 # BsmtFinSF1     0.000685  Na significa que nao tem porao 
 
+"""
 list_missing_cols = missing_data_nums[missing_data_nums != 0.0].index
 
 list_missing_cols = list_missing_cols.drop(['remainder__GarageYrBlt', 'remainder__BsmtHalfBath', 'remainder__BsmtFullBath', 'remainder__BsmtFinSF2', 'remainder__BsmtFinSF1'])
@@ -111,7 +120,7 @@ for col in list_missing_cols:
     y_pred = model.predict(X_test)
 
     data_test.loc[data_test[col].isna(), col] = y_pred
-
+"""
 #data_test.to_csv('dataset/test_imputed.csv', index=False)
 
 
