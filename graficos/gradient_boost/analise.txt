@@ -1,0 +1,16 @@
+Mean Squared Error: 12605761.14151656
+{'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.1, 'loss': 'squared_error'}
+Mean Squared Error: 195451721.99289602
+{'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.01, 'loss': 'squared_error'}
+Mean Squared Error: 115165781.06489222
+{'n_estimators': 100, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.1, 'loss': 'squared_error'}
+Mean Squared Error: 48064257.36582575
+{'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.05, 'loss': 'squared_error'}
+Mean Squared Error: 20063468.01142887
+{'n_estimators': 400, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.1, 'loss': 'squared_error'}
+Mean Squared Error: 34326928.93055777
+{'n_estimators': 300, 'max_depth': 4, 'min_samples_split': 5, 'learning_rate': 0.1, 'loss': 'squared_error'}
+Mean Squared Error: 46115362.19751247
+{'learning_rate': 0.05, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 4, 'n_estimators': 500}
+Mean Squared Error: 34326928.930557765
+{'learning_rate': 0.1, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 300}

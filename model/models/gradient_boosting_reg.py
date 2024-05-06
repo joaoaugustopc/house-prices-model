@@ -3,13 +3,14 @@ from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
 
 #importando os dados
 
 data_train = pd.read_csv('dataset/train_scaled.csv')
 data_test = pd.read_csv('dataset/test_scaled.csv')
 
-print(data_train.head())
+#print(data_train.head())
 
 target = "SalePrice"
 
@@ -17,38 +18,66 @@ X_train = data_train.drop(["remainder__Id", "SalePrice"], axis=1)
 y_train = data_train[target]
 X_test = data_test.drop(["remainder__Id"], axis=1).select_dtypes(include=["number"])
 
-params = {
-    "n_estimators": 500,
-    "max_depth": 4,
-    "min_samples_split": 5,
-    "learning_rate": 0.01,
-    "loss": "squared_error",
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingRegressor
+
+# Definindo o modelo
+reg = GradientBoostingRegressor()
+
+# Definindo os parâmetros que queremos testar
+param_grid = {
+    'n_estimators': [100, 300, 500],
+    'learning_rate': [0.1, 0.05],
+    'max_depth': [4],
+    'min_samples_split': [4, 5],
+    'min_samples_leaf': [1, 2]
 }
 
-reg = ensemble.GradientBoostingRegressor(**params)
-reg.fit(X_train, y_train)
+# Criando o GridSearchCV
+grid_search = GridSearchCV(estimator=reg, param_grid=param_grid, cv=10, n_jobs=-1, verbose=2)
 
-y_pred = reg.predict(X_test)
+# Ajustando o GridSearchCV
+grid_search.fit(X_train, y_train)
 
-feature_importances = reg.feature_importances_
+# Melhores parâmetros
+print("Melhores parâmetros:", grid_search.best_params_)
 
-print("Predicted house prices: ", feature_importances.ravel())
+# Melhor score
+print("Melhor score:", grid_search.best_score_)
+
+# Usando o melhor modelo para previsões
+y_pred = grid_search.predict(X_test)
+
+#print("Predicted house prices: ", feature_importances.ravel())
 
 result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
 
 result['Id'] = result['Id'].astype(int)
 
-result.to_csv('submissions/sample_submission_grad_boost_encoded_imputed_scaled.csv', index=False)
+result.to_csv('submissions/sample_submission_grad_boost_encoded_imputed_scaled_0.1_500.csv', index=False)
 
 #print("Predicted house prices: ", reg.score(X_train, y_train))
 
 #relação entre as features e a variável target
-sorted_idx = np.argsort(feature_importances)
-pos = np.arange(sorted_idx.shape[0]) + 0.0001
+# Selecionar as top N features mais importantes
+
+#evaluating errors
+mse = mean_squared_error(y_train, grid_search.predict(X_train))
+caminho_file = "graficos/gradient_boost/analise.txt"
+text_analise = "Mean Squared Error: " + str(mse) + "\n" + str(grid_search.best_params_)
+with open(caminho_file, "a") as arquivo:
+    arquivo.write(text_analise)
+
+""" 
+top_n = 30
+sorted_idx = np.argsort(feature_importances)[-top_n:]
+
+pos = np.arange(sorted_idx.shape[0]) + 0.5
 fig = plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.barh(pos, feature_importances[sorted_idx], align="center")
 plt.yticks(pos, np.array(X_test.columns)[sorted_idx])
-plt.title("Feature Importance (MDI)")
+plt.title("Top 30 Feature Importance (MDI)")
 
-plt.savefig('graficos/feature_importance_grad_boosting.png')
+plt.savefig('graficos/top30_feature_importance_grad_boosting.png')
+"""
