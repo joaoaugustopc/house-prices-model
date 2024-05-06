@@ -4,9 +4,8 @@ import numpy as np
 data_train = pd.read_csv('dataset/train_encoded.csv')
 data_test = pd.read_csv('dataset/test_encoded.csv')
 
-data_nums = data_train.select_dtypes(include=["number"], exclude=["object"])
 
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
+missing_data_nums = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
 
 # Lista de colunas com valores faltantes
 list_missing_cols = missing_data_nums[missing_data_nums != 0.0].index
@@ -36,26 +35,23 @@ for col in list_missing_cols:
 
     data_train.loc[data_train[col].isna(), col] = y_pred 
 
-data_nums = data_train.select_dtypes(include=["number"], exclude=["object"])
+data_train = data_train.select_dtypes(include=["number"], exclude=["object"])
 
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
+missing_data_nums = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
 
 print("Missing values in train data")
 print(missing_data_nums[missing_data_nums != 0.0])
 
 
-#data_train.to_csv('dataset/train_imputed_KNeighbors.csv', index=False)
+data_train.to_csv('dataset/train_imputed_KNeighbors.csv', index=False)
 
 # Para o conjunto de teste, vamos fazer a mesma coisa
-data_nums = data_test.select_dtypes(include=["number"], exclude=["object"])
-
-missing_data_nums = data_nums.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
+missing_data_nums = data_test.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
 
 print("Missing values in test data")
 print(missing_data_nums[missing_data_nums != 0.0])
 
-"""
-"""
+
 """Missing values in test data"""
 # LotFrontage    0.155586
 # GarageYrBlt    0.053461  NA significa que nao tem garagem 
@@ -69,16 +65,15 @@ print(missing_data_nums[missing_data_nums != 0.0])
 # BsmtFinSF2     0.000685  Na significa que nao tem porao
 # BsmtFinSF1     0.000685  Na significa que nao tem porao 
 
-"""
 list_missing_cols = missing_data_nums[missing_data_nums != 0.0].index
 
 list_missing_cols = list_missing_cols.drop(['remainder__GarageYrBlt', 'remainder__BsmtHalfBath', 'remainder__BsmtFullBath', 'remainder__BsmtFinSF2', 'remainder__BsmtFinSF1'])
 
-data_train['remainder__GarageYrBlt'] = data_train['remainder__GarageYrBlt'].fillna(0)
-data_train['remainder__BsmtHalfBath'] = data_train['remainder__BsmtHalfBath'].fillna(0)
-data_train['remainder__BsmtFullBath'] = data_train['remainder__BsmtFullBath'].fillna(0)
-data_train['remainder__BsmtFinSF2'] = data_train['remainder__BsmtFinSF2'].fillna(0)
-data_train['remainder__BsmtFinSF1'] = data_train['remainder__BsmtFinSF1'].fillna(0)
+data_test['remainder__GarageYrBlt'] = data_test['remainder__GarageYrBlt'].fillna(0)
+data_test['remainder__BsmtHalfBath'] = data_test['remainder__BsmtHalfBath'].fillna(0)
+data_test['remainder__BsmtFullBath'] = data_test['remainder__BsmtFullBath'].fillna(0)
+data_test['remainder__BsmtFinSF2'] = data_test['remainder__BsmtFinSF2'].fillna(0)
+data_test['remainder__BsmtFinSF1'] = data_test['remainder__BsmtFinSF1'].fillna(0)
 
 
 for col in list_missing_cols:
@@ -90,15 +85,19 @@ for col in list_missing_cols:
 
     X_test = test.drop(columns=list_missing_cols)
 
-    model = LinearRegression()
+    model = KNeighborsRegressor(n_neighbors=5)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
 
     data_test.loc[data_test[col].isna(), col] = y_pred
-"""
-#data_test.to_csv('dataset/test_imputed.csv', index=False)
 
+missing_data_nums = data_test.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
+
+print("Missing values in test data")
+print(missing_data_nums[missing_data_nums != 0.0])
+
+data_test.to_csv('dataset/test_imputed_KNeighbors.csv', index=False)
 
 
 """
