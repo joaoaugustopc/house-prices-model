@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 #importando os dados
 
-data_train = pd.read_csv('data/train_prep_encoded.csv')
-data_test = pd.read_csv('data/test_prep_encoded.csv')
+data_train = pd.read_csv('dataset/train_scaled.csv')
+data_test = pd.read_csv('dataset/test_scaled.csv')
 
 print(data_train.head())
 
@@ -38,7 +38,7 @@ result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
 
 result['Id'] = result['Id'].astype(int)
 
-result.to_csv('data/sample_submission_grad_boost_encoded.csv', index=False)
+result.to_csv('submissions/sample_submission_grad_boost_encoded_imputed_scaled.csv', index=False)
 
 #print("Predicted house prices: ", reg.score(X_train, y_train))
 
