@@ -15,13 +15,13 @@ data_train['MasVnrType'] = data_train['MasVnrType'].replace('None', 'NoMasVnr')
 data_test['MasVnrType'] = data_test['MasVnrType'].replace('None', 'NoMasVnr')
 
 # Lista de variáveis categóricas que possuem uma ordem natural padronizada
-list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond'] # NA, Po, Fa, TA, Gd, Ex
+list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond','ExterQual','ExterCond','HeatingQC','KitchenQual'] # NA, Po, Fa, TA, Gd, Ex
 
 #list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
 
 list_lb = ['CentralAir','Street'] # Sim ou não / Paved ou Gravel
 
-list = list_ordinal+ list_ordinal2 + list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive']
+list = list_ordinal+ list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive']
 
 pre_data_train = data_train.drop(columns=list)
 pre_data_train = pre_data_train.select_dtypes(include=["object"]).columns
@@ -83,10 +83,6 @@ encoder = OrdinalEncoder(categories=categories)
 data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
 data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
-encoder2 = OrdinalEncoder(categories=categories2, handle_unknown= 'use_encoded_value', unknown_value=-1)
-
-data_train[list_ordinal2] = encoder2.fit_transform(data_train[list_ordinal2])
-data_test[list_ordinal2] = encoder2.transform(data_test[list_ordinal2])
 
 # Transformar as variáveis categóricas em numéricas não ordenadas em binárias
 

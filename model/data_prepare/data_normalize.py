@@ -8,7 +8,7 @@ data_train = pd.read_csv('dataset/train_imputed_KNeighbors.csv')
 #data_test = pd.read_csv('dataset/test.csv') # colocar o nome do arquivo que contém os dados de teste
 
 # Colunas binárias
-cols_to_drop = data_train.filter(regex='onehotencoder').columns.tolist() + ["SalePrice"]
+cols_to_drop = data_train.filter(regex='onehotencoder').columns.tolist() + ["SalePrice","Id"]
 print(cols_to_drop)
 
 # Selecionar as colunas para normalizar
