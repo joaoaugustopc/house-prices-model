@@ -62,3 +62,11 @@ plt.savefig('graficos/analysing_missing_values/MasVnrType_MasVnrArea.png')
 categorical = data_train.select_dtypes(include='object').columns
 
 print(categorical)
+
+# atualiza 'MasVnrType' com base em 'MasVnrArea'
+data_train.loc[data_train['MasVnrArea'] == 0, 'MasVnrType'] = 'ausente'
+data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = pd.NA
+
+data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'ausente'
+data_test.loc[data_test['MasVnrArea'].isna(), 'MasVnrType'] = pd.NA
+
