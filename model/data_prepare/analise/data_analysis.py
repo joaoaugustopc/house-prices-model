@@ -70,4 +70,3 @@ data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = pd.NA
 data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'ausente'
 data_test.loc[data_test['MasVnrArea'].isna(), 'MasVnrType'] = pd.NA
 """
-
