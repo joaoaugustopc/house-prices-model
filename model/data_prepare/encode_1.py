@@ -36,8 +36,40 @@ pre_data_test = pre_data_test.select_dtypes(include=["object"]).columns
 data_train[list] = data_train[list].fillna('NA')
 data_test[list] = data_test[list].fillna('NA')
 
+
+# Criar listas de categorias com ordem diferentes
+lotshape_categories = [['IR3', 'IR2', 'IR1', 'Reg']] #olhar
+landslope_categories = [['Sev', 'Mod', 'Gtl']]
+bsmtexposure_categories = [['NA', 'No', 'Mn', 'Av', 'Gd']]
 bsmtfintype_categories = [['NA', 'Unf', 'LwQ', 'Rec', 'BLQ', 'ALQ', 'GLQ']]
+garagefinish_categories = [['NA', 'Unf', 'RFn', 'Fin']]
+paveddrive_categories = [['N', 'P', 'Y']]
+
+
+# Criar os encoders
+lotshape_encoder = OrdinalEncoder(categories=lotshape_categories)
+landslope_encoder = OrdinalEncoder(categories=landslope_categories)
+bsmtexposure_encoder = OrdinalEncoder(categories=bsmtexposure_categories)
 bsmtfintype_encoder = OrdinalEncoder(categories=bsmtfintype_categories)
+garagefinish_encoder = OrdinalEncoder(categories=garagefinish_categories)
+paveddrive_encoder = OrdinalEncoder(categories=paveddrive_categories)
+
+
+# Aplicar os encoders
+data_train['LotShape'] = lotshape_encoder.fit_transform(data_train[['LotShape']])
+data_train['LandSlope'] = landslope_encoder.fit_transform(data_train[['LandSlope']])
+data_train['BsmtExposure'] = bsmtexposure_encoder.fit_transform(data_train[['BsmtExposure']])
+data_train['GarageFinish'] = garagefinish_encoder.fit_transform(data_train[['GarageFinish']])
+data_train['PavedDrive'] = paveddrive_encoder.fit_transform(data_train[['PavedDrive']])
+
+
+# Aplicar os mesmos encoders aos dados de teste
+data_test['LotShape'] = lotshape_encoder.transform(data_test[['LotShape']])
+data_test['LandSlope'] = landslope_encoder.transform(data_test[['LandSlope']])
+data_test['BsmtExposure'] = bsmtexposure_encoder.transform(data_test[['BsmtExposure']])
+data_test['GarageFinish'] = garagefinish_encoder.transform(data_test[['GarageFinish']])
+data_test['PavedDrive'] = paveddrive_encoder.transform(data_test[['PavedDrive']])
+
 
 # Ajustar e transformar 'BsmtFinType1'
 data_train['BsmtFinType1'] = bsmtfintype_encoder.fit_transform(data_train[['BsmtFinType1']])
@@ -98,7 +130,6 @@ for col, categories in categories_dict.items():
     encoder.categories = categories
     encoder.fit_transform(data_train[[col]])
     data_test[col] = encoder.transform(data_test[[col]])
-
 
 # Transformar as variáveis categóricas em numéricas não ordenadas em binárias
 
