@@ -4,6 +4,7 @@ from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
+import pickle
 
 
 data_train = pd.read_csv('dataset/train.csv', na_values=['NA'])
@@ -83,12 +84,15 @@ encoder = OrdinalEncoder(categories=categories)
 data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
 data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
+
+"""
 #altera 'masvnrtype' com base em 'masvnrarea'
 data_train.loc[data_train['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
 data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = np.nan
 
 data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'ausente'
 data_test.loc[data_test['MasVnrArea'].isna(), 'MasVnrType'] = np.nan
+"""
 
 # Transformar as variáveis categóricas em numéricas não ordenadas em binárias
 
