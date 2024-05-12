@@ -79,6 +79,7 @@ categories = [['BrkCmn', 'BrkFace', 'CBlock', 'Stone', 'MasVnrNone']]
 encoder = OrdinalEncoder(categories=categories, handle_unknown='use_encoded_value', unknown_value=np.nan)
 # Transformar 'MasVnrType' em uma coluna ordinal
 data_train['MasVnrType'] = encoder.fit_transform(data_train[['MasVnrType']])
+data_test['MasVnrType'] = encoder.transform(data_test[['MasVnrType']])
 
 
 # Transformar as variáveis categóricas em numéricas não ordenadas em binárias

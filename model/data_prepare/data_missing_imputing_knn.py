@@ -67,11 +67,13 @@ print(missing_data_nums[missing_data_nums != 0.0])
 
 list_missing_cols = missing_data_nums[missing_data_nums != 0.0].index
 
-list_missing_cols = list_missing_cols.drop(['remainder__GarageYrBlt', 'remainder__BsmtHalfBath', 'remainder__BsmtFullBath', 'remainder__BsmtFinSF2', 'remainder__BsmtFinSF1'])
+list_missing_cols = list_missing_cols.drop(['remainder__GarageYrBlt', 'remainder__BsmtHalfBath', 'remainder__BsmtFullBath', 'remainder__BsmtFinSF2', 'remainder__BsmtFinSF1','remainder__TotalBsmtSF','remainder__BsmtUnfSF'])
 
 data_test['remainder__GarageYrBlt'] = data_test['remainder__GarageYrBlt'].fillna(0)
 data_test['remainder__BsmtHalfBath'] = data_test['remainder__BsmtHalfBath'].fillna(0)
 data_test['remainder__BsmtFullBath'] = data_test['remainder__BsmtFullBath'].fillna(0)
+data_test['remainder__TotalBsmtSF'] = data_test['remainder__TotalBsmtSF'].fillna(0)
+data_test['remainder__BsmtUnfSF'] = data_test['remainder__BsmtUnfSF'].fillna(0)
 data_test['remainder__BsmtFinSF2'] = data_test['remainder__BsmtFinSF2'].fillna(0)
 data_test['remainder__BsmtFinSF1'] = data_test['remainder__BsmtFinSF1'].fillna(0)
 
