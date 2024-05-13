@@ -26,10 +26,11 @@ from sklearn.ensemble import GradientBoostingRegressor
 # Definindo o modelo
 reg = GradientBoostingRegressor()
 
+
 # Definindo os parâmetros que queremos testar
 param_grid = {
-    'n_estimators': [100, 300, 500],
-    'learning_rate': [0.1, 0.05],
+    'n_estimators': [300, 500],
+    'learning_rate': [0.1],
     'max_depth': [4],
     'min_samples_split': [4, 5],
     'min_samples_leaf': [1, 2]

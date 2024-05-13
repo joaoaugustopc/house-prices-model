@@ -6,8 +6,8 @@ from sklearn.linear_model import Lasso
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeRegressor
 
-data_train = pd.read_csv('data/pre_data_train.csv')
-data_test = pd.read_csv('data/pre_data_test.csv')
+data_train = pd.read_csv('dataset/train_scaled.csv')
+data_test = pd.read_csv('dataset/test.csv')
 
 target = "SalePrice"
 
