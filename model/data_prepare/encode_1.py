@@ -12,13 +12,13 @@ y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
 # Lista de variáveis categóricas que possuem uma ordem natural padronizada
-list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond','ExterQual','ExterCond','HeatingQC','KitchenQual'] # NA, Po, Fa, TA, Gd, Ex
+list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond','ExterQual','ExterCond','HeatingQC'] # NA, Po, Fa, TA, Gd, Ex
 
 #list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
 
 list_lb = ['CentralAir','Street'] # Sim ou não / Paved ou Gravel
 
-list = list_ordinal+ list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive', 'MasVnrType','Electrical', 'MSZoning','Utilities','Exterior1st','SaleType','Functional']
+list = list_ordinal+ list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive', 'MasVnrType','Electrical', 'MSZoning','Utilities','Exterior1st','SaleType','Functional','KitchenQual']
 
 #retirando colunas que não serão binarizadas
 pre_data_train = data_train.drop(columns=list)
@@ -81,6 +81,11 @@ encoder = OrdinalEncoder(categories=categories, handle_unknown='use_encoded_valu
 data_train['MasVnrType'] = encoder.fit_transform(data_train[['MasVnrType']])
 data_test['MasVnrType'] = encoder.transform(data_test[['MasVnrType']])
 
+categories = [['Po','Fa','TA','Gd','Ex']]
+encoder = OrdinalEncoder(categories=categories, handle_unknown='use_encoded_value', unknown_value=np.nan)
+
+data_train['KitchenQual'] = encoder.fit_transform(data_train[['KitchenQual']])
+data_test['KitchenQual'] = encoder.transform(data_test[['KitchenQual']])
 
 # Transformar as variáveis categóricas em numéricas não ordenadas em binárias
 le = LabelEncoder()

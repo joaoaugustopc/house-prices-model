@@ -19,7 +19,6 @@ data_train = pd.read_csv('dataset/train_encoded.csv')
 data_test = pd.read_csv('dataset/test_encoded.csv')
 
 
-
 """Missing values in train data
 remainder__LotFrontage    0.177397
 remainder__GarageYrBlt    0.055479  NA significa que nao tem garagem
