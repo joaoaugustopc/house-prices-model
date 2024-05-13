@@ -156,8 +156,39 @@ print(missing_data_test[missing_data_test != 0.0])
 data_train['remainder__Id'] = data_train['remainder__Id'].astype(int)
 data_test['remainder__Id'] = data_test['remainder__Id'].astype(int)
 
-data_train.to_csv('dataset/train_encoded_imputed.csv',index=False)
-data_test.to_csv('dataset/test_encoded_imputed.csv',index=False)
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.compose import ColumnTransformer
+
+y_train = data_train['SalePrice']
+data_train = data_train.drop(columns=['SalePrice'])
+
+# Adicionando novas colunas para binarização
+columns_to_binarize = ['remainder__MSZoning', 'remainder__Utilities', 'remainder__Exterior1st', 'remainder__SaleType', 'remainder__Functional', 'remainder__Electrical', 'remainder__MasVnrType']
+
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.compose import make_column_transformer
+
+le = LabelEncoder()
+
+for col in columns_to_binarize:
+    data_train[col] = le.fit_transform(data_train[col].astype(str))
+    data_test[col] = le.transform(data_test[col].astype(str))
+    
+columns_train = make_column_transformer(
+    (OneHotEncoder(handle_unknown='ignore'), columns_to_binarize),
+    remainder='passthrough'
+)
+
+data_train_encoded = columns_train.fit_transform(data_train)
+data_test_encoded = columns_train.transform(data_test)
+
+train = pd.DataFrame(data_train_encoded,columns=columns_train.get_feature_names_out())
+test = pd.DataFrame(data_test_encoded,columns = columns_train.get_feature_names_out())
+
+train['SalePrice'] = y_train
+
+train.to_csv('dataset/train_encoded_imputed.csv',index=False)
+test.to_csv('dataset/test_encoded_imputed.csv',index=False)
 
 
 

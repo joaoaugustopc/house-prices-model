@@ -13,4 +13,5 @@ Mean Squared Error: 34326928.93055777
 Mean Squared Error: 46115362.19751247
 {'learning_rate': 0.05, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 4, 'n_estimators': 500}
 Mean Squared Error: 34326928.930557765
-{'learning_rate': 0.1, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 300}
+{'learning_rate': 0.1, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 300}Mean Squared Error: 48076233.63062369
+{'learning_rate': 0.05, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 500}

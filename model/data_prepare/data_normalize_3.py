@@ -4,8 +4,8 @@ from sklearn.preprocessing import StandardScaler
 
 # Normalizar os dados com ordem e numéricos - não one hot encoder
 
-data_train = pd.read_csv('dataset/train_imputed_KNeighbors.csv')
-data_test = pd.read_csv('dataset/test_imputed_KNeighbors.csv') # colocar o nome do arquivo que contém os dados de teste
+data_train = pd.read_csv('dataset/train_encoded_imputed.csv')
+data_test = pd.read_csv('dataset/test_encoded_imputed.csv') # colocar o nome do arquivo que contém os dados de teste
 
 # Colunas binárias
 cols_to_drop = data_train.filter(regex='onehotencoder').columns.tolist() + ["SalePrice","remainder__Id"]

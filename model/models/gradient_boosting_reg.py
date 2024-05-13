@@ -7,6 +7,8 @@ from sklearn.metrics import mean_squared_error
 
 #importando os dados
 
+#Melhores parâmetros: {'learning_rate': 0.05, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 500}
+
 data_train = pd.read_csv('dataset/train_scaled.csv')
 data_test = pd.read_csv('dataset/test_scaled.csv')
 
