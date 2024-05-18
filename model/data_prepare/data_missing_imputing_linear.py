@@ -91,14 +91,14 @@ print(missing_data_nums[missing_data_nums != 0.0])
 # LotFrontage    0.155586
 # GarageYrBlt    0.053461  NA significa que nao tem garagem 
 # MasVnrArea     0.010281
-# BsmtHalfBath   0.001371  Na significa que nao tem porao
-# BsmtFullBath   0.001371  Na significa que nao tem porao
+# BsmtHalfBath   0.001371  Na significa que nao tem porao, ou seja, Nenhum meio banheiro no porao
+# BsmtFullBath   0.001371  Na significa que nao tem porao, ou seja, Nenhum banheiro completo no porao
 # GarageArea     0.000685 
 # GarageCars     0.000685
-# TotalBsmtSF    0.000685 Na significa que nao tem porao
-# BsmtUnfSF      0.000685 Na significa que nao tem porao
-# BsmtFinSF2     0.000685  Na significa que nao tem porao
-# BsmtFinSF1     0.000685  Na significa que nao tem porao 
+# TotalBsmtSF    0.000685 Na significa que nao tem porao, ou seja, Total Area = 0
+# BsmtUnfSF      0.000685 Na significa que nao tem porao, ou seja, Unfinished Area = 0
+# BsmtFinSF2     0.000685  Na significa que nao tem porao, ou seja, Finished Area = 0
+# BsmtFinSF1     0.000685  Na significa que nao tem porao, ou seja, Finished Area = 0
 
 list_missing_cols = missing_data_nums[missing_data_nums != 0.0].index
 

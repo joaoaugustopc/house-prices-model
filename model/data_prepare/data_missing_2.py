@@ -170,9 +170,11 @@ from sklearn.compose import make_column_transformer
 
 le = LabelEncoder()
 
+"""
 for col in columns_to_binarize:
     data_train[col] = le.fit_transform(data_train[col].astype(str))
     data_test[col] = le.transform(data_test[col].astype(str))
+"""
     
 columns_train = make_column_transformer(
     (OneHotEncoder(handle_unknown='ignore'), columns_to_binarize),

@@ -70,7 +70,7 @@ data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
 #altera 'masvnrtype' com base em 'masvnrarea' -> tratando problema entre NA e None
 data_train.loc[data_train['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
-data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = np.nan
+#data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = np.nan ( Não faz diferença )
 data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
 
 # Definir a ordem das categorias

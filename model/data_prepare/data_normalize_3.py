@@ -19,8 +19,8 @@ scaler = StandardScaler()
 data_train[cols_to_scale] = scaler.fit_transform(data_train[cols_to_scale])
 data_test[cols_to_scale] = scaler.transform(data_test[cols_to_scale])  # Use o mesmo scaler para os dados de teste
 
-data_train["remainder__Id"] = data_train["remainder__remainder__Id"].astype(int)
-data_test["remainder__Id"] = data_test["remainder__remainder__Id"].astype(int)
+data_train["remainder__remainder__Id"] = data_train["remainder__remainder__Id"].astype(int)
+data_test["remainder__remainder__Id"] = data_test["remainder__remainder__Id"].astype(int)
 
 data_train.to_csv('dataset/train_scaled.csv', index=False)
 data_test.to_csv('dataset/test_scaled.csv', index=False)
