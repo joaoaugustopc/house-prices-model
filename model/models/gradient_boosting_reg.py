@@ -1,4 +1,3 @@
-from sklearn import ensemble
 from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
 import numpy as np
@@ -9,8 +8,8 @@ from sklearn.metrics import mean_squared_error
 
 #Melhores parâmetros: {'learning_rate': 0.05, 'max_depth': 4, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 500}
 
-data_train = pd.read_csv('dataset/train_scaled.csv')
-data_test = pd.read_csv('dataset/test_scaled.csv')
+data_train = pd.read_csv('dataset/train_encoded_imputed.csv')
+data_test = pd.read_csv('dataset/test_encoded_imputed.csv')
 
 #print(data_train.head())
 
@@ -63,13 +62,6 @@ result.to_csv('submissions/sample_submission_grad_boost_encoded_imputed_scaled_0
 
 #relação entre as features e a variável target
 # Selecionar as top N features mais importantes
-
-#evaluating errors
-mse = mean_squared_error(y_train, grid_search.predict(X_train))
-caminho_file = "graficos/gradient_boost/analise.txt"
-text_analise = "Mean Squared Error: " + str(mse) + "\n" + str(grid_search.best_params_)
-with open(caminho_file, "a") as arquivo:
-    arquivo.write(text_analise)
 
 """ 
 top_n = 30
