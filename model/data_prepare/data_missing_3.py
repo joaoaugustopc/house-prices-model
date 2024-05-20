@@ -15,8 +15,8 @@ import numpy as np
 # SaleType: Type of sale ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 # Exterior1st: Exterior covering on house ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 
-data_train = pd.read_csv('dataset/train_encoded.csv')
-data_test = pd.read_csv('dataset/test_encoded.csv')
+data_train = pd.read_csv('dataset/train_scaled.csv')
+data_test = pd.read_csv('dataset/test_scaled.csv')
 
 
 """Missing values in train data
@@ -48,26 +48,13 @@ remainder__KitchenQual     0.000685
 dtype: float64"""
 
 
-data_train['remainder__GarageYrBlt'] = data_train['remainder__GarageYrBlt'].fillna(0)
-
-data_test['remainder__GarageYrBlt'] = data_test['remainder__GarageYrBlt'].fillna(0)
-data_test['remainder__BsmtHalfBath'] = data_test['remainder__BsmtHalfBath'].fillna(0)
-data_test['remainder__BsmtFullBath'] = data_test['remainder__BsmtFullBath'].fillna(0)
-data_test['remainder__TotalBsmtSF'] = data_test['remainder__TotalBsmtSF'].fillna(0)
-data_test['remainder__BsmtUnfSF'] = data_test['remainder__BsmtUnfSF'].fillna(0)
-data_test['remainder__BsmtFinSF2'] = data_test['remainder__BsmtFinSF2'].fillna(0)
-data_test['remainder__BsmtFinSF1'] = data_test['remainder__BsmtFinSF1'].fillna(0)
+#substituindo valores faltantes que significam ausência
+remainder_null = ['remainder__GarageYrBlt', 'remainder__GarageArea', 'remainder__GarageCars', 'remainder__BsmtHalfBath', 'remainder__BsmtFullBath', 'remainder__TotalBsmtSF', 'remainder__BsmtUnfSF', 'remainder__BsmtFinSF2', 'remainder__BsmtFinSF1']
+data_test[remainder_null] = data_test[remainder_null].fillna(0)
+data_train[remainder_null] = data_train[remainder_null].fillna(0)
 
 missing_data_train = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
-
 missing_data_test = data_test.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
-
-print("Missing values in train data")
-print(missing_data_train[missing_data_train != 0.0])
-
-print("Missing values in test data")
-print(missing_data_test[missing_data_test != 0.0])
-
 
 list_missing_cols_train = missing_data_train[missing_data_train != 0.0].index
 list_missing_cols_test = missing_data_test[missing_data_test != 0.0].index
@@ -80,10 +67,14 @@ from sklearn.neighbors import KNeighborsClassifier
 
 for col in list_missing_cols_categ:
     train = data_train[data_train[col].notna()]
-    train = train.drop(columns=['remainder__Id'])
-    train = train.drop(columns=['SalePrice'])
+    train = train.drop(columns=['remainder__Id', 'SalePrice'])
 
-    X_train = train.drop(columns=list_missing_cols)
+    #valores faltantes em cada iteração
+    missing_cols_update_train = data_train.columns[data_train.isna().any()].tolist()
+    missing_cols_update_test = data_test.columns[data_test.isna().any()].tolist()
+    missing_cols_update = list(set(missing_cols_update_train).union(set(missing_cols_update_test)))
+
+    X_train = train.drop(columns=missing_cols_update)
     y_train = train[col]
 
     model = KNeighborsClassifier()
@@ -93,7 +84,7 @@ for col in list_missing_cols_categ:
     if col in ['remainder__MasVnrType', 'remainder__Electrical']:
         test = data_train[data_train[col].isna()]
         test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=list_missing_cols)
+        X_test = test.drop(columns=missing_cols_update)
 
         y_pred = model.predict(X_test)
 
@@ -101,7 +92,7 @@ for col in list_missing_cols_categ:
     if col != 'remainder__Electrical':
         test = data_test[data_test[col].isna()]
         test = test.drop(columns=['remainder__Id'])
-        X_test = test.drop(columns=list_missing_cols)
+        X_test = test.drop(columns=missing_cols_update)
 
         y_pred = model.predict(X_test)
 
@@ -115,21 +106,24 @@ print(list_missing_cols)
 from sklearn.neighbors import KNeighborsRegressor
 
 for col in list_missing_cols:
-    train = data_train[data_train[col].notna()]
-    train = train.drop(columns=['remainder__Id'])
-    train = train.drop(columns=['SalePrice'])
+    train_cat = data_train[data_train[col].notna()]
+    train_cat = train_cat.drop(columns=['remainder__Id', 'SalePrice'])
 
-    X_train = train.drop(columns=list_missing_cols)
-    y_train = train[col]
+    missing_cols_update_train = data_train.columns[data_train.isna().any()].tolist()
+    missing_cols_update_test = data_test.columns[data_test.isna().any()].tolist()
+    missing_cols_update_cat = list(set(missing_cols_update_train).union(set(missing_cols_update_test)))
+
+    X_train_cat = train_cat.drop(columns=missing_cols_update_cat)
+    y_train_cat = train_cat[col]
 
     model = KNeighborsRegressor()
 
-    model.fit(X_train,y_train)
+    model.fit(X_train_cat,y_train_cat)
 
     if col in ['remainder__LotFrontage','remainder__MasVnrArea']:
         test = data_train[data_train[col].isna()]
         test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=list_missing_cols)
+        X_test = test.drop(columns=missing_cols_update_cat)
 
         y_pred = model.predict(X_test)
 
@@ -137,27 +131,15 @@ for col in list_missing_cols:
     
     test = data_test[data_test[col].isna()]
     test = test.drop(columns=['remainder__Id'])
-    X_test = test.drop(columns=list_missing_cols)
+    X_test = test.drop(columns=missing_cols_update_cat)
 
     y_pred = model.predict(X_test)
 
     data_test.loc[data_test[col].isna(),col] = y_pred
 
-missing_data_train = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
-
-missing_data_test = data_test.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
-
-print("Missing values in train data")
-print(missing_data_train[missing_data_train != 0.0])
-
-print("Missing values in test data")
-print(missing_data_test[missing_data_test != 0.0])
 
 data_train['remainder__Id'] = data_train['remainder__Id'].astype(int)
 data_test['remainder__Id'] = data_test['remainder__Id'].astype(int)
-
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder
-from sklearn.compose import ColumnTransformer
 
 y_train = data_train['SalePrice']
 data_train = data_train.drop(columns=['SalePrice'])
@@ -189,11 +171,3 @@ train['SalePrice'] = y_train
 
 train.to_csv('dataset/train_encoded_imputed.csv',index=False)
 test.to_csv('dataset/test_encoded_imputed.csv',index=False)
-
-
-
-
-
-
-
-
