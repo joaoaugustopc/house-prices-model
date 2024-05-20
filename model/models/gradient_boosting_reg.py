@@ -16,9 +16,9 @@ data_test = pd.read_csv('dataset/test_scaled.csv')
 
 target = "SalePrice"
 
-X_train = data_train.drop(["remainder__Id", "SalePrice"], axis=1)
+X_train = data_train.drop(["remainder__remainder__Id", "SalePrice"], axis=1)
 y_train = data_train[target]
-X_test = data_test.drop(["remainder__Id"], axis=1).select_dtypes(include=["number"])
+X_test = data_test.drop(["remainder__remainder__Id"], axis=1).select_dtypes(include=["number"])
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import GradientBoostingRegressor
@@ -53,7 +53,7 @@ y_pred = grid_search.predict(X_test)
 
 #print("Predicted house prices: ", feature_importances.ravel())
 
-result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
+result = pd.DataFrame({'Id': data_test['remainder__remainder__Id'], 'SalePrice': y_pred})
 
 result['Id'] = result['Id'].astype(int)
 

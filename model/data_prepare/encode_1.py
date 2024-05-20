@@ -11,14 +11,15 @@ data_test = pd.read_csv('dataset/test.csv', na_values=['NA'])
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
+#altera 'masvnrtype' com base em 'masvnrarea' -> tratando problema entre NA e None
+data_train.loc[data_train['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
+data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
+
 # Lista de variáveis categóricas que possuem uma ordem natural padronizada
 list_ordinal = ['BsmtQual','BsmtCond','FireplaceQu','GarageQual','GarageCond','ExterQual','ExterCond','HeatingQC'] # NA, Po, Fa, TA, Gd, Ex
+#['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
 
-#list_ordinal2 = ['ExterQual','ExterCond','HeatingQC','KitchenQual'] # Po, Fa, TA, Gd, Ex  -> Se aparecer 0 é valor faltante
-
-list_lb = ['CentralAir','Street'] # Sim ou não / Paved ou Gravel
-
-list = list_ordinal+ list_lb + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive', 'MasVnrType','Electrical', 'MSZoning','Utilities','Exterior1st','SaleType','Functional','KitchenQual']
+list = list_ordinal + ['LotShape','LandSlope','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageFinish','PavedDrive', 'MasVnrType','Electrical', 'MSZoning','Utilities','Exterior1st','SaleType','Functional','KitchenQual','CentralAir','Street']
 
 #retirando colunas que não serão binarizadas
 pre_data_train = data_train.drop(columns=list)
@@ -39,14 +40,19 @@ categories_dict = {
     'BsmtFinType2': [['NA', 'Unf', 'LwQ', 'Rec', 'BLQ', 'ALQ', 'GLQ']],
     'GarageFinish': [['NA', 'Unf', 'RFn', 'Fin']],
     'PavedDrive': [['N', 'P', 'Y']],
+    'Street': [['Grvl', 'Pave']],
+    'CentralAir': [['N', 'Y']],
     #atributos categóricos (FALTANTES NO TESTE) transformados em ordinais para fazer o imputing -> será binarizado depois do imputing
     'MSZoning': [['A', 'C (all)', 'FV', 'I', 'RH', 'RL', 'RP', 'RM']],
     'Utilities': [['ELO', 'NoSeWa', 'NoSewr', 'AllPub']],
     'Exterior1st': [['AsbShng', 'AsphShn', 'BrkComm', 'BrkFace', 'CBlock', 'CemntBd', 'HdBoard', 'ImStucc', 'MetalSd', 'Other', 'Plywood', 'PreCast', 'Stone', 'Stucco', 'VinylSd', 'Wd Sdng', 'WdShing']],
     'SaleType': [['COD', 'CWD', 'Con', 'ConLD', 'ConLI', 'ConLw', 'New', 'Oth', 'WD']],
     'Functional': [['Maj2', 'Maj1', 'Min1', 'Min2', 'Mod', 'Sev', 'Typ']],
+    'KitchenQual': [['Po', 'Fa', 'TA', 'Gd', 'Ex']],
     #atributo categórico (FALTANTE NO TREINO) transformado em ordinal para fazer o imputing -> será binarizado depois do imputing
-    'Electrical': [['Mix', 'FuseP', 'FuseF', 'FuseA', 'SBrkr']]
+    'Electrical': [['Mix', 'FuseP', 'FuseF', 'FuseA', 'SBrkr']],
+    #atributo categórico (FALTANTE NO TREINO e TESTE) transformado em ordinal para fazer o imputing -> será binarizado depois do imputing
+    'MasVnrType': [['BrkCmn', 'BrkFace', 'CBlock', 'Stone', 'MasVnrNone']]
 }
 
 encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=np.nan)
@@ -67,34 +73,6 @@ encoder = OrdinalEncoder(categories=categories)
 data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
 data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
-
-#altera 'masvnrtype' com base em 'masvnrarea' -> tratando problema entre NA e None
-data_train.loc[data_train['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
-#data_train.loc[data_train['MasVnrArea'].isna(), 'MasVnrType'] = np.nan ( Não faz diferença )
-data_test.loc[data_test['MasVnrArea'] == 0, 'MasVnrType'] = 'MasVnrNone'
-
-# Definir a ordem das categorias
-categories = [['BrkCmn', 'BrkFace', 'CBlock', 'Stone', 'MasVnrNone']]
-# Criar um objeto OrdinalEncoder
-encoder = OrdinalEncoder(categories=categories, handle_unknown='use_encoded_value', unknown_value=np.nan)
-# Transformar 'MasVnrType' em uma coluna ordinal
-data_train['MasVnrType'] = encoder.fit_transform(data_train[['MasVnrType']])
-data_test['MasVnrType'] = encoder.transform(data_test[['MasVnrType']])
-
-categories = [['Po','Fa','TA','Gd','Ex']]
-encoder = OrdinalEncoder(categories=categories, handle_unknown='use_encoded_value', unknown_value=np.nan)
-
-data_train['KitchenQual'] = encoder.fit_transform(data_train[['KitchenQual']])
-data_test['KitchenQual'] = encoder.transform(data_test[['KitchenQual']])
-
-# Transformar as variáveis categóricas em numéricas não ordenadas em binárias
-le = LabelEncoder()
-
-for col in list_lb:
-    data_train[col] = le.fit_transform(data_train[col].astype(str))
-    data_test[col] = le.fit_transform(data_test[col].astype(str))
-
-
 column_trans = make_column_transformer(
     (OneHotEncoder(handle_unknown='ignore'), pre_data_train),
     remainder='passthrough'
@@ -111,8 +89,8 @@ test = pd.DataFrame(data_test_encoded,columns = column_trans.get_feature_names_o
 
 train['SalePrice'] = y_train
 
-train.fillna('NA', inplace=True)
-test.fillna('NA', inplace=True)
+train = train.fillna('NA')
+test = test.fillna('NA')
 
 train.to_csv('dataset/train_encoded.csv', index=False)
 test.to_csv('dataset/test_encoded.csv', index=False)

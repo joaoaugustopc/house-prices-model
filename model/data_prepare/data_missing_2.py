@@ -59,7 +59,6 @@ data_test['remainder__BsmtFinSF2'] = data_test['remainder__BsmtFinSF2'].fillna(0
 data_test['remainder__BsmtFinSF1'] = data_test['remainder__BsmtFinSF1'].fillna(0)
 
 missing_data_train = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
-
 missing_data_test = data_test.isnull().sum().sort_values(ascending=False) / data_test.shape[0]
 
 print("Missing values in train data")
@@ -76,15 +75,26 @@ list_missing_cols = list_missing_cols_train.union(list_missing_cols_test)
 
 list_missing_cols_categ  = ['remainder__MasVnrType', 'remainder__Electrical', 'remainder__MSZoning','remainder__Utilities','remainder__Functional','remainder__SaleType','remainder__Exterior1st','remainder__KitchenQual']
 
+""" 
+VARIÁVEIS COM INTERSECÇÃO DE VALORES FALTANTES )
+remainder__MasVnrType ( treino )
+remainder__MasVnrType ( teste ) 
+remainder__MSZoning ( teste )
+remainder__Utilities ( todas as linhas com interseção )
+remainder__Functional ( teste )
+"""
 from sklearn.neighbors import KNeighborsClassifier
+
+intersection = np.array([])
 
 for col in list_missing_cols_categ:
     train = data_train[data_train[col].notna()]
     train = train.drop(columns=['remainder__Id'])
     train = train.drop(columns=['SalePrice'])
+    X_train = train.dropna()
+    y_train = X_train[col]
+    X_train = X_train.drop(columns = [col])
 
-    X_train = train.drop(columns=list_missing_cols)
-    y_train = train[col]
 
     model = KNeighborsClassifier()
 
@@ -93,34 +103,96 @@ for col in list_missing_cols_categ:
     if col in ['remainder__MasVnrType', 'remainder__Electrical']:
         test = data_train[data_train[col].isna()]
         test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=list_missing_cols)
+        X_test = test.drop(columns=[col])
+        na_index = X_test[X_test.notna().all(axis=1)].index
+        X_test = X_test.dropna()
 
+        if(len(na_index) != len(test[col])):
+            intersection = np.append(intersection,col)
         y_pred = model.predict(X_test)
 
-        data_train.loc[data_train[col].isna(),col] = y_pred
+        data_train.loc[na_index,col] = y_pred
     if col != 'remainder__Electrical':
         test = data_test[data_test[col].isna()]
         test = test.drop(columns=['remainder__Id'])
-        X_test = test.drop(columns=list_missing_cols)
+
+        X_test = test.drop(columns=[col])
+        na_index = X_test[X_test.notna().all(axis=1)].index
+        X_test = X_test.dropna()
+
+        if(len(na_index) != len(test[col])):
+            intersection = np.append(intersection,col)
+
+        if(len(na_index) == 0):
+            continue
 
         y_pred = model.predict(X_test)
 
-        data_test.loc[data_test[col].isna(),col] = y_pred
+        data_test.loc[na_index,col] = y_pred
+
+
+
+intersection = np.unique(intersection)
+
+for col in intersection:
+    print(col)
+    train = data_train[data_train[col].notna()]
+    train = train.drop(columns=['remainder__Id'])
+    train = train.drop(columns=['SalePrice'])
+    X_train = train.dropna()
+    y_train = X_train[col]
+    X_train = X_train.drop(columns = [col])
+
+    if col == 'remainder__MasVnrType':
+        test = data_train[data_train[col].isna()]
+        test = test.drop(columns=['remainder__Id','SalePrice'])
+        X_test = test.drop(columns=[col])
+        X_test = X_test.dropna(axis=1)
+        cols_after_drop = X_test.columns
+    
+    
+        X_train = X_train[cols_after_drop]
+        
+        model = KNeighborsClassifier()
+
+        model.fit(X_train,y_train)
+
+        y_pred = model.predict(X_test)
+        data_train.loc[data_train[col].isna(),col] = y_pred
+
+
+    test = data_test[data_test[col].isna()]
+    test = test.drop(columns=['remainder__Id'])
+    X_test = test.drop(columns=[col])
+    X_test = X_test.dropna(axis=1)
+    cols_after_drop = X_test.columns
+
+    X_train = X_train[cols_after_drop]
+
+    model = KNeighborsClassifier()
+
+    model.fit(X_train,y_train)
+
+
+    y_pred = model.predict(X_test)
+    data_test.loc[data_test[col].isna(),col] = y_pred 
 
 
 list_missing_cols = list_missing_cols.drop(list_missing_cols_categ)
-
 print(list_missing_cols)
 
 from sklearn.neighbors import KNeighborsRegressor
+
+intersection = np.array([])
 
 for col in list_missing_cols:
     train = data_train[data_train[col].notna()]
     train = train.drop(columns=['remainder__Id'])
     train = train.drop(columns=['SalePrice'])
 
-    X_train = train.drop(columns=list_missing_cols)
-    y_train = train[col]
+    X_train = train.dropna()
+    y_train = X_train[col]
+    X_train = X_train.drop(columns = [col])
 
     model = KNeighborsRegressor()
 
@@ -129,18 +201,89 @@ for col in list_missing_cols:
     if col in ['remainder__LotFrontage','remainder__MasVnrArea']:
         test = data_train[data_train[col].isna()]
         test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=list_missing_cols)
+        X_test = test.drop(columns=[col])
+        na_index = X_test[X_test.notna().all(axis=1)].index
+        X_test = X_test.dropna()
+        
+        if(len(na_index) != len(test[col])):
+            print(col, "treino com interseção")
+            intersection = np.append(intersection,col)
+
+        if(len(na_index) == 0):
+            print(col,"com todas as linhas do treino com interseção")
+            continue
 
         y_pred = model.predict(X_test)
 
-        data_train.loc[data_train[col].isna(),col] = y_pred
+        data_train.loc[na_index,col] = y_pred
     
     test = data_test[data_test[col].isna()]
     test = test.drop(columns=['remainder__Id'])
-    X_test = test.drop(columns=list_missing_cols)
+    X_test = test.drop(columns=[col])
+    na_index = X_test[X_test.notna().all(axis=1)].index
+    X_test = X_test.dropna()
+
+    if(len(na_index) != len(test[col])):
+        print(col,"teste com interseção")
+        intersection = np.append(intersection,col)
+    
+    if(len(na_index) == 0):
+        print(col,"com todas as linhas teste com interseção")
+        continue
 
     y_pred = model.predict(X_test)
 
+    data_test.loc[na_index,col] = y_pred
+
+intersection = np.unique(intersection)
+
+print(intersection)
+
+""" 
+remainder__GarageArea com todas as linhas do teste com interseção
+remainder__GarageCars com todas as linhas do teste com interseção
+remainder__LotFrontage ( treino e teste ) com interseção
+remainder__MasVnrArea ( treino e teste ) com interseção
+"""
+
+for col in intersection:
+    print(col)
+    train = data_train[data_train[col].notna()]
+    train = train.drop(columns=['remainder__Id'])
+    train = train.drop(columns=['SalePrice'])
+    X_train = train.dropna()
+    y_train = X_train[col]
+    X_train = X_train.drop(columns = [col])
+
+    if col in ['remainder__LotFrontage','remainder__MasVnrArea']:
+        test = data_train[data_train[col].isna()]
+        test = test.drop(columns=['remainder__Id','SalePrice'])
+        X_test = test.drop(columns=[col])
+        X_test = X_test.dropna(axis=1)
+        cols_after_drop = X_test.columns
+
+        X_train = X_train[cols_after_drop]
+
+        model = KNeighborsRegressor()
+
+        model.fit(X_train,y_train)
+
+        y_pred = model.predict(X_test)
+        data_train.loc[data_train[col].isna(),col] = y_pred
+
+    test = data_test[data_test[col].isna()]
+    test = test.drop(columns=['remainder__Id'])
+    X_test = test.drop(columns=[col])
+    X_test = X_test.dropna(axis=1)
+    cols_after_drop = X_test.columns
+
+    X_train = X_train[cols_after_drop]
+
+    model = KNeighborsRegressor()
+
+    model.fit(X_train,y_train)
+
+    y_pred = model.predict(X_test)
     data_test.loc[data_test[col].isna(),col] = y_pred
 
 missing_data_train = data_train.isnull().sum().sort_values(ascending=False) / data_train.shape[0]
