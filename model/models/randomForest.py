@@ -6,14 +6,14 @@ from sklearn.linear_model import Lasso
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeRegressor
 
-data_train = pd.read_csv('data/pre_data_train.csv')
-data_test = pd.read_csv('data/pre_data_test.csv')
+data_train = pd.read_csv('dataset/train_scaled.csv')
+data_test = pd.read_csv('dataset/test_scaled.csv')
 
 target = "SalePrice"
 
-X_train = data_train.drop(["Id", "SalePrice"], axis=1)
+X_train = data_train.drop(["remainder__remainder__Id", "SalePrice"], axis=1)
 y_train = data_train[target]
-X_test = data_test.drop(["Id"], axis=1).select_dtypes(include=["number"])
+X_test = data_test.drop(["remainder__remainder__Id"], axis=1).select_dtypes(include=["number"])
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
@@ -55,9 +55,11 @@ feature_importances = feature_importances.sort_values(by="importance", ascending
 
 print(feature_importances)
 
-result = pd.DataFrame({'Id': data_test['Id'], 'SalePrice': y_pred})
+result = pd.DataFrame({'Id': data_test['remainder__remainder__Id'], 'SalePrice': y_pred})
 
-result.to_csv('data/sample_submission_rf.csv', index=False)
+result['Id'] = result['Id'].astype(int) 
+
+result.to_csv('submissions/sample_submission_rf_scaled.csv', index=False)
 
 
 # Submissão 1 : {'min_samples_leaf': 1, 'n_estimators': 200} ----  0.8605659089358756
