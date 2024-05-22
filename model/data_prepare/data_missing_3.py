@@ -163,8 +163,6 @@ def main():
     missing_data_train = get_missing_data(data_train[list_missing_cols_categ])
     missing_data_test = get_missing_data(data_test[list_missing_cols_categ])
 
-    columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
-    data_train,data_test = binarize(data_train,data_test,columns_to_binarize)
 
     list_missing_cols = list_missing_cols.drop(list_missing_cols_categ)
 
@@ -198,8 +196,11 @@ def main():
     data_train['remainder__Id'] = data_train['remainder__Id'].astype(int)
     data_test['remainder__Id'] = data_test['remainder__Id'].astype(int)
 
-    data_train.to_csv('dataset/(TESTE)train_encoded_imputed.csv',index=False)
-    data_test.to_csv('dataset/(TESTE)test_encoded_imputed.csv',index=False)
+    columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
+    data_train,data_test = binarize(data_train,data_test,columns_to_binarize)
+    
+    data_train.to_csv('dataset/train_encoded_imputed.csv',index=False)
+    data_test.to_csv('dataset/test_encoded_imputed.csv',index=False)
 
 if __name__ == '__main__':
     main()
