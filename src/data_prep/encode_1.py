@@ -2,12 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OrdinalEncoder
-import pickle
+from ..utils.data_transformation import load_data
 
-data_train = pd.read_csv('dataset/train.csv', na_values=['NA'])
-data_test = pd.read_csv('dataset/test.csv', na_values=['NA'])
+data_train, data_test = load_data('train', 'test')
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
@@ -65,6 +63,9 @@ for col, categories in categories_dict.items():
     data_train[col] = encoder.fit_transform(data_train[[col]])
     #transformando os dados de teste
     data_test[col] = encoder.transform(data_test[[col]])
+     # adicionando prefixo 'cat_' aos nomes das colunas
+    data_train.rename(columns={col: 'cat__' + col}, inplace=True)
+    data_test.rename(columns={col: 'cat__' + col}, inplace=True)
 
 
 # Transformar as variáveis categóricas em numéricas ordenadas -> ordem natural equivalente -> NA, Po, Fa, TA, Gd, Ex
