@@ -4,8 +4,53 @@ from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
-from ..utils.data_transformation import load_data, binarize_data, get_missing_data
 
+def binarize(data_train,data_test,columns_to_binarize):
+    y_train = data_train['SalePrice']
+    data_train = data_train.drop(columns=['SalePrice'])
+
+    data_train.columns = data_train.columns.str.replace('remainder__','')
+    data_test.columns = data_test.columns.str.replace('remainder__','')
+
+    columns_train = make_column_transformer(
+        (OneHotEncoder(handle_unknown='ignore'), columns_to_binarize),
+        remainder='passthrough'
+    )
+
+    data_train_encoded = columns_train.fit_transform(data_train)
+    data_test_encoded = columns_train.transform(data_test)
+
+    train = pd.DataFrame(data_train_encoded,columns=columns_train.get_feature_names_out())
+    test = pd.DataFrame(data_test_encoded,columns = columns_train.get_feature_names_out())
+
+    train['SalePrice'] = y_train
+
+    return train,test
+
+#TO DO: tem essa função no data_transformation.py
+def load_data():
+    data_train = pd.read_csv('dataset/train_scaled.csv')
+    data_test = pd.read_csv('dataset/test_scaled.csv')
+
+    return data_train,data_test
+
+#TO DO: essa função não precisa existir
+def fill_0 (data, columns):
+    for col in columns:
+        data[col] = data[col].fillna(0)
+    return data
+
+#TO DO: essa função pode ser resumida em uma linha e já retornar as colunas
+def get_missing_data(data):
+    missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
+    print(missing_data[missing_data != 0.0])
+    return missing_data
+     
+
+def get_missing_cols(missing_data):
+    return  missing_data[missing_data != 0.0].index
+
+#TO DO: generalizar função
 def train_model(data, column, model, cols = []):
     train = data[data[column].notna()]
     train = train.drop(columns=['remainder__Id'])
@@ -22,6 +67,7 @@ def train_model(data, column, model, cols = []):
 
     return model
 
+#TO DO: generalizar função
 def predict_values(data_train, data_test, column, model):
     test = data_train[data_train[column].isna()]
     if not test.empty:
@@ -46,6 +92,7 @@ def predict_values(data_train, data_test, column, model):
             y_pred = model.predict(X_test)
             data_test.loc[na_index,column] = y_pred
 
+#TO DO: generalizar função -> quebrar a função em partes menores
 def predict_intersection(data_train, data_test, column, model):
     test = data_train[data_train[column].isna()]
     if not test.empty:
@@ -70,27 +117,34 @@ def predict_intersection(data_train, data_test, column, model):
         data_test.loc[data_test[column].isna(),column] = y_pred
 
 def main():
-    data_train,data_test = load_data("train_encoded", "test_encoded")
-    
-    #atributos nos quais valores falantes representam ausência de uma característica
-    missing_zero_cols = ['remainder__GarageYrBlt','remainder__BsmtHalfBath','remainder__BsmtFullBath','remainder__TotalBsmtSF','remainder__BsmtUnfSF','remainder__BsmtFinSF2','remainder__BsmtFinSF1']
-    data_train[missing_zero_cols] = data_train[missing_zero_cols].fillna(0)
-    data_test[missing_zero_cols] = data_test[missing_zero_cols].fillna(0)
+    data_train,data_test = load_data()
 
-    #lista de colunas que possuem pelo menos 1 valor faltante
-    list_missing_cols = pd.concat([data_train, data_test]).columns[pd.concat([data_train, data_test]).isnull().any()].tolist()
+    data_train = fill_0(data_train,['remainder__GarageYrBlt'])
+    data_test = fill_0(data_test,['remainder__GarageYrBlt','remainder__BsmtHalfBath','remainder__BsmtFullBath','remainder__TotalBsmtSF','remainder__BsmtUnfSF','remainder__BsmtFinSF2','remainder__BsmtFinSF1'])
 
-    #identificando atributos categóricos
-    list_missing_cols_categ = list_missing_cols.filter(regex='cat__').columns.tolist()
-    
+
+    print("Missing values in train data")
+    missing_data_train = get_missing_data(data_train)
+    print("Missing values in test data")
+    missing_data_test = get_missing_data(data_test)
+
+
+    list_missing_cols_train = get_missing_cols(missing_data_train)
+    list_missing_cols_test = get_missing_cols(missing_data_test)
+
+    list_missing_cols = list_missing_cols_train.union(list_missing_cols_test)
+
+    list_missing_cols_categ  = ['remainder__MasVnrType', 'remainder__Electrical', 'remainder__MSZoning','remainder__Utilities',
+                                'remainder__Functional','remainder__SaleType','remainder__Exterior1st','remainder__KitchenQual']
+
     model = KNeighborsClassifier()
-    
+
     for col in list_missing_cols_categ:
         model = train_model(data_train,col,model)
         predict_values(data_train,data_test,col,model)
 
+
     print(" Depois de inferir algumas variáveis categóricas ")
-    
     intersection_train = get_missing_data(data_train[list_missing_cols_categ])
     intersection_test = get_missing_data(data_test[list_missing_cols_categ])
 
@@ -148,7 +202,7 @@ def main():
     data_test['remainder__Id'] = data_test['remainder__Id'].astype(int)
 
     columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
-    data_train,data_test = binarize_data(data_train,data_test,columns_to_binarize)
+    data_train,data_test = binarize(data_train,data_test,columns_to_binarize)
     
     data_train.to_csv('dataset/train_encoded_imputed.csv',index=False)
     data_test.to_csv('dataset/test_encoded_imputed.csv',index=False)
@@ -168,10 +222,6 @@ if __name__ == '__main__':
 # Functional: Home functionality ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 # SaleType: Type of sale ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 # Exterior1st: Exterior covering on house ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
-
-
-
-
 
 """Missing values in train data
 remainder__LotFrontage    0.177397

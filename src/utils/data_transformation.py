@@ -41,7 +41,6 @@ def robust_scaler(data_train, data_test, exclude_cols=[]):
 
     return data_train, data_test
 
-
 """ 
     Binarizando dados usando one hot encoder
 """
@@ -66,11 +65,19 @@ def binarize_data(data_train, data_test, cols_to_binarize):
     
     return train, test
     
-     
+""" 
+    Imprime as colunas com valores faltantes
+    :param data: DataFrame
+"""
 def print_missing_data(data):
     missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
     print(missing_data[missing_data != 0.0])
 
+""" 
+    Retorna as colunas com valores faltantes
+    :param data: DataFrame
+    :return: Lista de colunas com valores faltantes
+"""
 def get_missing_data(data):
     return data.isnull().any().tolist()
     
