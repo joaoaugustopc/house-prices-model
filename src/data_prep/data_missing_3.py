@@ -110,7 +110,6 @@ def predict_intersection(data_train, data_test, column, model):
         y_pred = model.predict(X_test)
         data_test.loc[data_test[column].isna(),column] = y_pred
 
-
 def main():
     data_train,data_test = load_data()
 

@@ -3,9 +3,9 @@ import numpy as np
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import OrdinalEncoder
-from ..utils.data_transformation import load_data
+from ..utils.data_transformation import load_data, robust_scaler
 
-data_train, data_test = load_data('train', 'test')
+data_train, data_test = load_data('train', 'test', raw=True)
 y_train = data_train['SalePrice']
 data_train.drop(columns=['SalePrice'], inplace=True)
 
