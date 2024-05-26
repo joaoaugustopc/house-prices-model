@@ -24,15 +24,15 @@ def load_data(file_train, file_test, raw=False):
     :return: DataFrames normalizados
 """
 def robust_scaler(data_train, data_test, exclude_cols=[]):
-    # Colunas binárias
+    #colunas binárias
     cols_to_drop = data_train.filter(regex='onehotencoder').columns.tolist() + exclude_cols
     print(cols_to_drop)
 
-    # Selecionar as colunas para normalizar
+    #selecionar as colunas para normalizar
     cols_to_scale = data_train.columns.difference(cols_to_drop)
     scaler = RobustScaler()
 
-    # Normalizar as colunas selecionadas
+    #normalizar as colunas selecionadas
     data_train[cols_to_scale] = scaler.fit_transform(data_train[cols_to_scale])
     data_test[cols_to_scale] = scaler.transform(data_test[cols_to_scale])
 
@@ -71,22 +71,8 @@ def print_missing_data(data):
     missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
     print(missing_data[missing_data != 0.0])
 
-def train_model_imputing(data, col, model, cols = []):
-    to_drop = ['remainder__SalePrice', 'remainder__Id'] if 'remainder__Saleprice' in data.columns else ['remainder__Id']
-    data_to_train = data.drop(columns=to_drop)
-    #mantendo somente as linhas que não possuem valores faltantes
-    data_to_train = data_to_train[data_to_train[col].notna()].dropna()
-    X = data_to_train.drop(columns=[col])
-    y = data_to_train[col]
-    
-    if len(cols) > 0:
-        X = X[cols]
-    
-    model.fit(X, y)
-    return model
-
-
-
+def get_missing_data(data):
+    return data.isnull().any().tolist()
     
 
 
