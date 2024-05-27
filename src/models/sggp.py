@@ -8,7 +8,7 @@ def main():
     y_train = data_train['SalePrice']
     X_test = data_test.drop(["remainder__Id"], axis=1)
     
-    est_gp = SymbolicRegressor()
+    est_gp = SymbolicRegressor(population_size=500, generations=50, tournament_size=5, stopping_criteria=0.00001,random_state=None, n_features=data_train.shape[1])
     
     est_gp.fit(X_train, y_train)
         
