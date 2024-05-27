@@ -43,10 +43,13 @@ def robust_scaler(data_train, data_test, exclude_cols=[]):
 
 """ 
     Binarizando dados usando one hot encoder
+    A variável target está sendo manipulada para funcionar tanto com dataframes que a possuem, quanto o contrário
 """
 def binarize_data(data_train, data_test, cols_to_binarize):
-    target = data_train['SalePrice']
-    data_train = data_train.drop(columns=['SalePrice'])
+    target = None
+    if 'SalePrice' in data_train.columns:
+        target = data_train['SalePrice'] 
+        data_train = data_train.drop(columns=['SalePrice'])
     
     data_train.columns = data_train.columns.str.replace('onehotencoder__', '')
     data_test.columns = data_test.columns.str.replace('onehotencoder__', '')
@@ -60,7 +63,7 @@ def binarize_data(data_train, data_test, cols_to_binarize):
     data_test = columns_train.transform(data_test)
     
     train = pd.DataFrame(data_train, columns=columns_train.get_feature_names_out())
-    train['SalePrice'] = target
+    train['SalePrice'] = target if 'SalePrice' not in train.columns else train['SalePrice']
     test = pd.DataFrame(data_test, columns=columns_train.get_feature_names_out())
     
     return train, test
@@ -78,7 +81,7 @@ def print_missing_data(data):
     :param data: DataFrame
     :return: Lista de colunas com valores faltantes
 """
-def get_missing_data(data):
+def get_missing_(data):
     return data.isnull().any().tolist()
     
 

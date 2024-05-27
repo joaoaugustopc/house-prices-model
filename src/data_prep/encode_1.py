@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import OrdinalEncoder
-from ..utils.data_transformation import load_data, robust_scaler
+from ..utils.data_transformation import load_data, robust_scaler, binarize_data
 
 def main():
 
@@ -77,20 +77,12 @@ def main():
     data_train[list_ordinal] = encoder.fit_transform(data_train[list_ordinal])
     data_test[list_ordinal] = encoder.transform(data_test[list_ordinal])
 
-    column_trans = make_column_transformer(
-        (OneHotEncoder(handle_unknown='ignore'), pre_data_train),
-        remainder='passthrough'
-    )
-
-    # Aplicar a transformação aos dados de treinamento
-    data_train_encoded = column_trans.fit_transform(data_train)
-    data_test_encoded = column_trans.transform(data_test) 
-
-    train = pd.DataFrame(data_train_encoded,columns=column_trans.get_feature_names_out())
-    test = pd.DataFrame(data_test_encoded,columns = column_trans.get_feature_names_out())
-
-    train['SalePrice'] = y_train
-
+    #colunas binarizada
+    train, test = binarize_data(data_train, data_test, pre_data_train)
+    
+    #usando o robust scaler
+    cols_exclude_scale = ["SalePrice","remainder__Id", "remainder__MSZoning", "remainder__Utilities", "remainder__Exterior1st", "remainder__SaleType", "remainder__Functional", "remainder__Electrical", "remainder__MasVnrType", "remainder__KitchenQual"]
+    train, test = robust_scaler(train, test, cols_exclude_scale)
     train = train.fillna('NA')
     test = test.fillna('NA')
 
