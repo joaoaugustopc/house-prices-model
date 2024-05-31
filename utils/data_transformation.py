@@ -51,8 +51,8 @@ def binarize_data(data_train, data_test, cols_to_binarize):
         target = data_train['SalePrice'] 
         data_train = data_train.drop(columns=['SalePrice'])
     
-    data_train.columns = data_train.columns.str.replace('onehotencoder__', '')
-    data_test.columns = data_test.columns.str.replace('onehotencoder__', '')
+    data_train.columns = data_train.columns.str.replace('remainder__', '')
+    data_test.columns = data_test.columns.str.replace('remainder__', '')
     
     columns_train = make_column_transformer(
         (OneHotEncoder(handle_unknown='ignore'), cols_to_binarize),
