@@ -4,58 +4,20 @@ from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
+from ..utils.data_transformation import load_data, binarize_data
 
-def binarize(data_train,data_test,columns_to_binarize):
-    y_train = data_train['SalePrice']
-    data_train = data_train.drop(columns=['SalePrice'])
 
-    data_train.columns = data_train.columns.str.replace('remainder__','')
-    data_test.columns = data_test.columns.str.replace('remainder__','')
-
-    columns_train = make_column_transformer(
-        (OneHotEncoder(handle_unknown='ignore'), columns_to_binarize),
-        remainder='passthrough'
-    )
-
-    data_train_encoded = columns_train.fit_transform(data_train)
-    data_test_encoded = columns_train.transform(data_test)
-
-    train = pd.DataFrame(data_train_encoded,columns=columns_train.get_feature_names_out())
-    test = pd.DataFrame(data_test_encoded,columns = columns_train.get_feature_names_out())
-
-    train['SalePrice'] = y_train
-
-    return train,test
-
-#TO DO: tem essa função no data_transformation.py
-def load_data():
-    data_train = pd.read_csv('dataset/train_scaled.csv')
-    data_test = pd.read_csv('dataset/test_scaled.csv')
-
-    return data_train,data_test
-
-#TO DO: essa função não precisa existir
-def fill_0 (data, columns):
-    for col in columns:
-        data[col] = data[col].fillna(0)
-    return data
-
-#TO DO: essa função pode ser resumida em uma linha e já retornar as colunas
 def get_missing_data(data):
     missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
-    print(missing_data[missing_data != 0.0])
-    return missing_data
+    return missing_data[missing_data != 0.0]
      
 
-def get_missing_cols(missing_data):
-    return  missing_data[missing_data != 0.0].index
+def get_missing_cols(data):
+    missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
+    return missing_data[missing_data != 0.0].index
 
-#TO DO: generalizar função
 def train_model(data, column, model, cols = []):
     train = data[data[column].notna()]
-    train = train.drop(columns=['remainder__Id'])
-    if 'SalePrice' in train.columns:
-        train = train.drop(columns=['SalePrice'])
     X_train = train.dropna()
     y_train = X_train[column]
     X_train = X_train.drop(columns = [column])
@@ -67,12 +29,10 @@ def train_model(data, column, model, cols = []):
 
     return model
 
-#TO DO: generalizar função
 def predict_values(data_train, data_test, column, model):
-    test = data_train[data_train[column].isna()]
-    if not test.empty:
-        test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=[column])
+    valsToPredict = data_train[data_train[column].isna()]
+    if not valsToPredict.empty:
+        X_test = valsToPredict.drop(columns=[column])
         na_index = X_test[X_test.notna().all(axis=1)].index
         X_test = X_test.dropna()
 
@@ -81,10 +41,9 @@ def predict_values(data_train, data_test, column, model):
             data_train.loc[na_index,column] = y_pred
     
 
-    test = data_test[data_test[column].isna()]
-    if not test.empty:
-        test = test.drop(columns=['remainder__Id'])
-        X_test = test.drop(columns=[column])
+    valsToPredict = data_test[data_test[column].isna()]
+    if not valsToPredict.empty:
+        X_test = valsToPredict.drop(columns=[column])
         na_index = X_test[X_test.notna().all(axis=1)].index
         X_test = X_test.dropna()
 
@@ -92,12 +51,10 @@ def predict_values(data_train, data_test, column, model):
             y_pred = model.predict(X_test)
             data_test.loc[na_index,column] = y_pred
 
-#TO DO: generalizar função -> quebrar a função em partes menores
 def predict_intersection(data_train, data_test, column, model):
-    test = data_train[data_train[column].isna()]
-    if not test.empty:
-        test = test.drop(columns=['remainder__Id','SalePrice'])
-        X_test = test.drop(columns=[column])
+    valsToPredict = data_train[data_train[column].isna()]
+    if not valsToPredict.empty:
+        X_test = valsToPredict.drop(columns=[column])
         X_test = X_test.dropna(axis=1)
         cols_after_drop = X_test.columns
         model = train_model(data_train,column,model,cols_after_drop)
@@ -105,10 +62,9 @@ def predict_intersection(data_train, data_test, column, model):
         y_pred = model.predict(X_test)
         data_train.loc[data_train[column].isna(),column] = y_pred
     
-    test = data_test[data_test[column].isna()]
-    if not test.empty:
-        test = test.drop(columns=['remainder__Id'])
-        X_test = test.drop(columns=[column])
+    valsToPredict = data_test[data_test[column].isna()]
+    if not valsToPredict.empty:
+        X_test = valsToPredict.drop(columns=[column])
         X_test = X_test.dropna(axis=1)
         cols_after_drop = X_test.columns
         model = train_model(data_test,column,model,cols_after_drop)
@@ -117,22 +73,19 @@ def predict_intersection(data_train, data_test, column, model):
         data_test.loc[data_test[column].isna(),column] = y_pred
 
 def main():
-    data_train,data_test = load_data()
+    train,test = load_data('train_scaled','test_scaled')
 
-    data_train = fill_0(data_train,['remainder__GarageYrBlt'])
-    data_test = fill_0(data_test,['remainder__GarageYrBlt','remainder__BsmtHalfBath','remainder__BsmtFullBath','remainder__TotalBsmtSF','remainder__BsmtUnfSF','remainder__BsmtFinSF2','remainder__BsmtFinSF1'])
+    target = train['SalePrice']
 
+    data_train = train.drop(columns=['remainder__Id','SalePrice'])
+    data_test = test.drop(columns=['remainder__Id'])
 
-    print("Missing values in train data")
-    missing_data_train = get_missing_data(data_train)
-    print("Missing values in test data")
-    missing_data_test = get_missing_data(data_test)
-
-
-    list_missing_cols_train = get_missing_cols(missing_data_train)
-    list_missing_cols_test = get_missing_cols(missing_data_test)
-
-    list_missing_cols = list_missing_cols_train.union(list_missing_cols_test)
+    listFill_0 = ['remainder__GarageYrBlt','remainder__BsmtHalfBath',
+                  'remainder__BsmtFullBath','remainder__TotalBsmtSF','remainder__BsmtUnfSF',
+                  'remainder__BsmtFinSF2','remainder__BsmtFinSF1']
+    
+    data_train[listFill_0] = data_train[listFill_0].fillna(0)
+    data_test[listFill_0] = data_test[listFill_0].fillna(0)
 
     list_missing_cols_categ  = ['remainder__MasVnrType', 'remainder__Electrical', 'remainder__MSZoning','remainder__Utilities',
                                 'remainder__Functional','remainder__SaleType','remainder__Exterior1st','remainder__KitchenQual']
@@ -144,32 +97,17 @@ def main():
         predict_values(data_train,data_test,col,model)
 
 
-    print(" Depois de inferir algumas variáveis categóricas ")
     intersection_train = get_missing_data(data_train[list_missing_cols_categ])
     intersection_test = get_missing_data(data_test[list_missing_cols_categ])
-
-    intersection_train = intersection_train[intersection_train != 0.0]
-    intersection_test = intersection_test[intersection_test != 0.0]
-
     intersection = pd.concat([intersection_train,intersection_test]).index.drop_duplicates()
-    """ VARIÁVEIS COM INTERSECÇÃO DE VALORES FALTANTES )
-    remainder__MasVnrType ( treino )
-    remainder__MasVnrType ( teste ) 
-    remainder__MSZoning ( teste )
-    remainder__Utilities ( todas as linhas com interseção )
-    remainder__Functional ( teste )"""
-
+    
     intersection_model = KNeighborsClassifier()
 
     for col in intersection:
         predict_intersection(data_train,data_test,col,intersection_model)
 
-    print("Depois de inferir as variáveis categóricas com interseção")
-    missing_data_train = get_missing_data(data_train[list_missing_cols_categ])
-    missing_data_test = get_missing_data(data_test[list_missing_cols_categ])
-
-
-    list_missing_cols = list_missing_cols.drop(list_missing_cols_categ)
+    list_missing_cols = get_missing_cols(data_train)
+    list_missing_cols = list_missing_cols.union(get_missing_cols(data_test))
 
     model = KNeighborsRegressor()
 
@@ -177,35 +115,29 @@ def main():
         model = train_model(data_train,col,model)
         predict_values(data_train,data_test,col,model)
 
-    print("Depois de inferir as variáveis númericas")
     intersection_train = get_missing_data(data_train[list_missing_cols])
     intersection_test = get_missing_data(data_test[list_missing_cols])
 
     intersection = pd.concat([intersection_train,intersection_test]).index.drop_duplicates()
-    """ 
-    remainder__GarageArea com todas as linhas do teste com interseção
-    remainder__GarageCars com todas as linhas do teste com interseção
-    remainder__LotFrontage ( treino e teste ) com interseção
-    remainder__MasVnrArea ( treino e teste ) com interseção
-    """
+   
 
     intersection_model = KNeighborsRegressor()
 
     for col in intersection:
         predict_intersection(data_train,data_test,col,intersection_model)
 
-    print("Depois de inferir as variáveis númericas com interseção")
-    missing_data_train = get_missing_data(data_train)
-    missing_data_test = get_missing_data(data_test)
-
-    data_train['remainder__Id'] = data_train['remainder__Id'].astype(int)
-    data_test['remainder__Id'] = data_test['remainder__Id'].astype(int)
+    
 
     columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
-    data_train,data_test = binarize(data_train,data_test,columns_to_binarize)
+    data_train,data_test = binarize_data(data_train,data_test,columns_to_binarize)
     
-    data_train.to_csv('dataset/train_encoded_imputed.csv',index=False)
-    data_test.to_csv('dataset/test_encoded_imputed.csv',index=False)
+    data_train['remainder__Id'] = train['remainder__Id'].astype(int)
+    data_test['remainder__Id'] = test['remainder__Id'].astype(int)
+
+    data_train['SalePrice'] = target
+    
+    data_train.to_csv('dataset/processed/train_encoded_imputed.csv',index=False)
+    data_test.to_csv('dataset/processed/test_encoded_imputed.csv',index=False)
 
 if __name__ == '__main__':
     main()
