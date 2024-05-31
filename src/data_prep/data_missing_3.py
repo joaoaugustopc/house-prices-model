@@ -27,20 +27,17 @@ def binarize(data_train,data_test,columns_to_binarize):
 
     return train,test
 
-#TO DO: tem essa função no data_transformation.py
 def load_data():
-    data_train = pd.read_csv('dataset/train_scaled.csv')
-    data_test = pd.read_csv('dataset/test_scaled.csv')
+    data_train = pd.read_csv('dataset/processed/train_encoded.csv')
+    data_test = pd.read_csv('dataset/processed/test_encoded.csv')
 
     return data_train,data_test
 
-#TO DO: essa função não precisa existir
 def fill_0 (data, columns):
     for col in columns:
         data[col] = data[col].fillna(0)
     return data
 
-#TO DO: essa função pode ser resumida em uma linha e já retornar as colunas
 def get_missing_data(data):
     missing_data = data.isnull().sum().sort_values(ascending=False) / data.shape[0]
     print(missing_data[missing_data != 0.0])
@@ -50,7 +47,6 @@ def get_missing_data(data):
 def get_missing_cols(missing_data):
     return  missing_data[missing_data != 0.0].index
 
-#TO DO: generalizar função
 def train_model(data, column, model, cols = []):
     train = data[data[column].notna()]
     train = train.drop(columns=['remainder__Id'])
@@ -67,7 +63,6 @@ def train_model(data, column, model, cols = []):
 
     return model
 
-#TO DO: generalizar função
 def predict_values(data_train, data_test, column, model):
     test = data_train[data_train[column].isna()]
     if not test.empty:
@@ -92,7 +87,6 @@ def predict_values(data_train, data_test, column, model):
             y_pred = model.predict(X_test)
             data_test.loc[na_index,column] = y_pred
 
-#TO DO: generalizar função -> quebrar a função em partes menores
 def predict_intersection(data_train, data_test, column, model):
     test = data_train[data_train[column].isna()]
     if not test.empty:
@@ -115,6 +109,7 @@ def predict_intersection(data_train, data_test, column, model):
         
         y_pred = model.predict(X_test)
         data_test.loc[data_test[column].isna(),column] = y_pred
+
 
 def main():
     data_train,data_test = load_data()
@@ -223,6 +218,10 @@ if __name__ == '__main__':
 # SaleType: Type of sale ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 # Exterior1st: Exterior covering on house ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 
+
+
+
+
 """Missing values in train data
 remainder__LotFrontage    0.177397
 remainder__GarageYrBlt    0.055479  NA significa que nao tem garagem
@@ -258,5 +257,4 @@ dtype: float64"""
 
 
  
-
 
