@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.compose import make_column_transformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import OrdinalEncoder
-from ..utils.data_transformation import load_data, robust_scaler, binarize_data
+from utils.data_transformation import load_data, robust_scaler, binarize_data
 
 def main():
 

@@ -72,6 +72,7 @@ def predict_intersection(data_train, data_test, column, model):
         y_pred = model.predict(X_test)
         data_test.loc[data_test[column].isna(),column] = y_pred
 
+
 def main():
     train,test = load_data('train_scaled','test_scaled')
 
@@ -155,6 +156,10 @@ if __name__ == '__main__':
 # SaleType: Type of sale ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 # Exterior1st: Exterior covering on house ( TESTE APENAS ) -> ((((( Valor faltante = 0 ))))), uma linha apenas
 
+
+
+
+
 """Missing values in train data
 remainder__LotFrontage    0.177397
 remainder__GarageYrBlt    0.055479  NA significa que nao tem garagem
@@ -190,5 +195,4 @@ dtype: float64"""
 
 
  
-
 
