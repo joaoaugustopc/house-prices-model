@@ -65,11 +65,6 @@ def main():
         data_train[col] = encoder.fit_transform(data_train[[col]])
         #transformando os dados de teste
         data_test[col] = encoder.transform(data_test[[col]])
-        #adicionando prefixo 'miss_cat__' se existir algum atributo ordinal com valor faltante
-        if data_train[col].isnull().sum() > 0 or data_test[col].isnull().sum() > 0:
-            data_train.rename(columns={col: 'miss_cat__' + col}, inplace=True)
-            data_test.rename(columns={col: 'miss_cat__' + col}, inplace=True)
-
 
     # Transformar as variáveis categóricas em numéricas ordenadas -> ordem natural equivalente -> NA, Po, Fa, TA, Gd, Ex
     categories = [['NA','Po','Fa','TA','Gd','Ex']] * len(list_ordinal)
@@ -79,10 +74,15 @@ def main():
 
     #colunas binarizada
     train, test = binarize_data(data_train, data_test, pre_data_train)
+
+    train['SalePrice'] = y_train
     
     #usando o robust scaler
-    cols_exclude_scale = ["SalePrice","remainder__Id", "remainder__MSZoning", "remainder__Utilities", "remainder__Exterior1st", "remainder__SaleType", "remainder__Functional", "remainder__Electrical", "remainder__MasVnrType", "remainder__KitchenQual"]
+    cols_exclude_scale = ["SalePrice","remainder__Id", "remainder__MSZoning", 
+                          "remainder__Utilities", "remainder__Exterior1st", "remainder__SaleType", 
+                          "remainder__Functional", "remainder__Electrical", "remainder__MasVnrType", "remainder__KitchenQual"]
     train, test = robust_scaler(train, test, cols_exclude_scale)
+    
     train = train.fillna('NA')
     test = test.fillna('NA')
 

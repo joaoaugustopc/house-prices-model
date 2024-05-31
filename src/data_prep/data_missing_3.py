@@ -4,7 +4,7 @@ from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import KNeighborsRegressor
-from ..utils.data_transformation import load_data, binarize_data
+from utils.data_transformation import load_data, binarize_data
 
 
 def get_missing_data(data):
@@ -74,7 +74,7 @@ def predict_intersection(data_train, data_test, column, model):
 
 
 def main():
-    train,test = load_data('train_scaled','test_scaled')
+    train,test = load_data('train_encoded','test_encoded')
 
     target = train['SalePrice']
 
@@ -136,6 +136,7 @@ def main():
     data_test['remainder__Id'] = test['remainder__Id'].astype(int)
 
     data_train['SalePrice'] = target
+
     
     data_train.to_csv('dataset/processed/train_encoded_imputed.csv',index=False)
     data_test.to_csv('dataset/processed/test_encoded_imputed.csv',index=False)

@@ -46,11 +46,6 @@ def robust_scaler(data_train, data_test, exclude_cols=[]):
     A variável target está sendo manipulada para funcionar tanto com dataframes que a possuem, quanto o contrário
 """
 def binarize_data(data_train, data_test, cols_to_binarize):
-    target = None
-    if 'SalePrice' in data_train.columns:
-        target = data_train['SalePrice'] 
-        data_train = data_train.drop(columns=['SalePrice'])
-    
     data_train.columns = data_train.columns.str.replace('remainder__', '')
     data_test.columns = data_test.columns.str.replace('remainder__', '')
     
@@ -59,12 +54,11 @@ def binarize_data(data_train, data_test, cols_to_binarize):
         remainder='passthrough'
     )
     
-    data_train = columns_train.fit_transform(data_train)
-    data_test = columns_train.transform(data_test)
+    data_train_encoded = columns_train.fit_transform(data_train)
+    data_test_encoded = columns_train.transform(data_test)
     
-    train = pd.DataFrame(data_train, columns=columns_train.get_feature_names_out())
-    train['SalePrice'] = target if 'SalePrice' not in train.columns else train['SalePrice']
-    test = pd.DataFrame(data_test, columns=columns_train.get_feature_names_out())
+    train = pd.DataFrame(data_train_encoded, columns=columns_train.get_feature_names_out())
+    test = pd.DataFrame(data_test_encoded, columns=columns_train.get_feature_names_out())
     
     return train, test
     
