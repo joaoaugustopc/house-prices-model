@@ -81,6 +81,7 @@ def main():
     data_train = train.drop(columns=['remainder__Id','SalePrice'])
     data_test = test.drop(columns=['remainder__Id'])
 
+    
     listFill_0 = ['remainder__GarageYrBlt','remainder__BsmtHalfBath',
                   'remainder__BsmtFullBath','remainder__TotalBsmtSF','remainder__BsmtUnfSF',
                   'remainder__BsmtFinSF2','remainder__BsmtFinSF1']
@@ -105,11 +106,19 @@ def main():
     intersection_model = KNeighborsClassifier()
 
     for col in intersection:
+        model = train_model(data_train,col,model)
+        predict_values(data_train,data_test,col,model)
         predict_intersection(data_train,data_test,col,intersection_model)
+
+    data_train.loc[data_train['remainder__MasVnrType'] == 4, 'remainder__MasVnrArea'] = 0
+    data_test.loc[data_test['remainder__MasVnrType'] == 4, 'remainder__MasVnrArea'] = 0
 
     list_missing_cols = get_missing_cols(data_train)
     list_missing_cols = list_missing_cols.union(get_missing_cols(data_test))
 
+    columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
+    data_train,data_test = binarize_data(data_train,data_test,columns_to_binarize)
+    
     model = KNeighborsRegressor()
 
     for col in list_missing_cols:
@@ -125,19 +134,19 @@ def main():
     intersection_model = KNeighborsRegressor()
 
     for col in intersection:
+        model = train_model(data_train,col,model)
+        predict_values(data_train,data_test,col,model)
         predict_intersection(data_train,data_test,col,intersection_model)
 
     
 
-    columns_to_binarize = ['MSZoning', 'Utilities', 'Exterior1st', 'SaleType', 'Functional', 'Electrical', 'MasVnrType']
-    data_train,data_test = binarize_data(data_train,data_test,columns_to_binarize)
     
     data_train['remainder__Id'] = train['remainder__Id'].astype(int)
     data_test['remainder__Id'] = test['remainder__Id'].astype(int)
 
     data_train['SalePrice'] = target
 
-    
+
     data_train.to_csv('dataset/processed/train_encoded_imputed.csv',index=False)
     data_test.to_csv('dataset/processed/test_encoded_imputed.csv',index=False)
 

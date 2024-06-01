@@ -31,11 +31,12 @@ def main():
 
     # Definindo os parâmetros que queremos testar
     param_grid = {
-        'n_estimators': [300, 500],
-        'learning_rate': [0.1],
+        'n_estimators': [500],
+        'learning_rate': [0.05],
         'max_depth': [4],
-        'min_samples_split': [4, 5],
-        'min_samples_leaf': [1, 2]
+        'min_samples_split': [4],
+        'min_samples_leaf': [1],
+        'max_features': ['sqrt'],
     }
 
     # Criando o GridSearchCV
