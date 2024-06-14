@@ -1,6 +1,6 @@
 from ..SGGP.genetic import SymbolicRegressor
 import numpy as np
-from ..utils.data_transformation import load_data
+from utils.data_transformation import load_data
 import pandas as pd
 
 def main():
