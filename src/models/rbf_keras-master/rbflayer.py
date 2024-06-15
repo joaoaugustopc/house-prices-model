@@ -1,10 +1,7 @@
 from keras import backend as K
-from tensorflow import keras
-from keras.api.initializers import RandomUniform, Initializer, Constant
+from tensorflow.keras.layers import Layer
+from keras.initializers import RandomUniform, Initializer, Constant
 import numpy as np
-
-
-
 class InitCentersRandom(Initializer):
     """ Initializer for initialization of centers of RBF network
         as random samples from the given data set.
