@@ -1,19 +1,15 @@
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import GridSearchCV
-from sklearn.linear_model import Lasso
-import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeRegressor
+from utils.data_transformation import load_data
 
-data_train = pd.read_csv('dataset/train_scaled.csv')
-data_test = pd.read_csv('dataset/test_scaled.csv')
+data_train, data_test = load_data('train_encoded_imputed', 'test_encoded_imputed')
 
 target = "SalePrice"
 
-X_train = data_train.drop(["remainder__remainder__Id", "SalePrice"], axis=1)
+X_train = data_train.drop(["remainder__Id", "SalePrice"], axis=1)
 y_train = data_train[target]
-X_test = data_test.drop(["remainder__remainder__Id"], axis=1).select_dtypes(include=["number"])
+X_test = data_test.drop(["remainder__Id"], axis=1).select_dtypes(include=["number"])
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
@@ -21,23 +17,19 @@ from sklearn.model_selection import GridSearchCV
 # Definindo os parâmetros para ajustar
 param_grid = {
     'n_estimators': [100, 200, 400],
-    #'max_features': ['None','auto', 'sqrt', 'log2'],
-    #'min_samples_leaf': [1, 2, 4, 5, 10],
-    #'min_impurity_decrease': np.linspace(0, 0.5, 10),
-}
+    'max_features': ['sqrt', 'log2'],
+    'min_samples_leaf': [1, 2, 4],
+    'max_depth': [8,10]
+    }
 
 # Criando o modelo
 rf = RandomForestRegressor(n_jobs=-1)
 
-CV_rf = GridSearchCV(estimator=rf, param_grid=param_grid, cv= 5)
-
+CV_rf = GridSearchCV(estimator=rf, param_grid=param_grid, cv=10)
 
 CV_rf.fit(X_train, y_train)
 
-
 print(CV_rf.best_params_)
-
-
 
 rf = RandomForestRegressor(oob_score=True, n_jobs = -1, **CV_rf.best_params_)
 rf.fit(X_train, y_train)
@@ -55,7 +47,7 @@ feature_importances = feature_importances.sort_values(by="importance", ascending
 
 print(feature_importances)
 
-result = pd.DataFrame({'Id': data_test['remainder__remainder__Id'], 'SalePrice': y_pred})
+result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_pred})
 
 result['Id'] = result['Id'].astype(int) 
 
