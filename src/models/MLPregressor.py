@@ -9,12 +9,14 @@ def main():
     y_train = data_train['SalePrice'].values
     X_test = data_test.drop(["remainder__Id"], axis=1).values
     
-    est_gp = MLPRegressor(hidden_layer_sizes=(700), activation='relu', solver='adam', batch_size='auto',
-                          max_iter=3000, random_state=None, verbose=True, learning_rate_init=0.01,warm_start=True)
+    model = MLPRegressor(hidden_layer_sizes=(1024), activation='relu', solver='adam', batch_size='auto',
+                          max_iter=300, random_state=None, verbose=True, learning_rate_init=0.01,warm_start=True, tol = 1e-5)
 
-    est_gp.fit(X_train, y_train)
+    model.fit(X_train, y_train)
     
-    y_predict = est_gp.predict(X_test)
+    y_predict = model.predict(X_test)
+
+    print("Score:",model.score(X_train, y_train))
        
     result = pd.DataFrame({'Id': data_test['remainder__Id'], 'SalePrice': y_predict})
 
