@@ -4,20 +4,51 @@ import numpy as np
 import pandas as pd
 import keras_tuner as kt
 from utils.data_transformation import load_data
+import matplotlib.pyplot as plt
+
+def plotHistory(history):
+
+  fig, ax = plt.subplots(1,2,figsize=(26,10))
+
+  # Imprime a curva de aprendizado
+  ax[0].set_title('Mean Squared Percentage Error', pad=-40)
+  ax[0].plot(history.history['loss'], label='train')
+  ax[0].plot(history.history['val_loss'], label='valid')
+  ax[0].legend(loc='best')
+
+  # Imprime a curva de acurácia
+  ax[1].set_title('Mean Squared Error', pad=-40)
+  ax[1].plot(history.history['mse'], label='train')
+  ax[1].plot(history.history['val_mse'], label='valid')
+  ax[1].legend(loc='best')
+
+  plt.show()
+
 
 def build_model(hp, imput_shape):
     model = keras.Sequential()
-    hidden_layers = hp.Int('hidden_layers', 1, 3)
-    units = hp.Int('units', min_value=32, max_value=1024, step=256)
-    activation = hp.Choice('activation', values=['relu','elu','selu'])
-    model.add(keras.layers.Dense(units=units, activation=activation, input_shape= imput_shape))
+    model.add(keras.layers.Dense(units= hp.Int(f"units", min_value=64, max_value=4096, step=256),
+                                 activation= hp.Choice("activation", ["relu","elu","selu","linear"]), 
+                                 input_shape= imput_shape))
+    if hp.Boolean("dropout"):
+        model.add(keras.layers.Dropout(rate = 0.2))
 
-    for i in range(hidden_layers - 1):
-        units = hp.Int(f'units_{i}', min_value=32, max_value=1024, step=256)
-        model.add(keras.layers.Dense(units=units, activation=activation))
-    
+    """
+    model.add(keras.layers.InputLayer(input_shape=imput_shape))
+    for i in range(hp.Int("num_layers", 1, 3)):
+        model.add(
+            keras.layers.Dense(
+                units=hp.Int(f"units_{i}", [64,256,512,1024,2048,4096,6000,8192,10000]),
+                activation=hp.Choice("activation", ["relu", "elu","selu","linear"]),
+            )
+        )
+    """
     model.add(keras.layers.Dense(1))
-    model.compile(optimizer='adam', loss='mse', metrics=['mse'])
+    
+    lr = hp.Choice("learning_rate", [1e-1, 1e-2, 1e-3, 1e-4])
+    opt = keras.optimizers.Adam(learning_rate=lr)
+    
+    model.compile(optimizer=opt, loss='mse', metrics=['mse'])
     return model
 
 def main():
@@ -46,14 +77,13 @@ def main():
      - gridSearch -> Explora sistematicamente todas as combinações possíveis dos hiperparâmetros fornecidos.
     """
 
-    tuner = kt.RandomSearch( 
+    tuner = kt.BayesianOptimization( 
         lambda hp: build_model(hp, imput_shape),
         objective='val_loss',
-        #max_epochs=50,
-        max_trials=10,
-        executions_per_trial=3,
+        max_trials=100,
+        executions_per_trial=1,
         directory='my_dir',
-        project_name='house_prices',
+        project_name='one_hidden_layer',
     )
 
     """
@@ -68,31 +98,32 @@ def main():
 
     """
 
-    checkpoint = keras.callbacks.ModelCheckpoint("best_model.keras", save_best_only=True, monitor='val_loss')
+    #checkpoint = keras.callbacks.ModelCheckpoint("best_model.keras", save_best_only=True, monitor='val_loss')
 
-    early_stopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True, monitor='val_loss')
+    early_stopping = keras.callbacks.EarlyStopping(patience=25, restore_best_weights=True, monitor='val_loss')
 
-    tuner.search(X_train, y_train, epochs=200, validation_split=0.1, callbacks=[checkpoint, early_stopping])
+    tuner.search(X_train, y_train, epochs=1000, validation_split=0.1,callbacks=[early_stopping],batch_size=64)
 
     best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
 
     model = tuner.hypermodel.build(best_hps)
 
-    history = model.fit(X_train, y_train, epochs=1000, validation_split=0.1, callbacks=[checkpoint, early_stopping])
+    history = model.fit(X_train, y_train, epochs=1000, validation_split=0.1, callbacks=[early_stopping],batch_size=64)
     
+    plotHistory(history)
 
-    best_model = keras.models.load_model("best_model.keras")
+    #best_model = keras.models.load_model("best_model.keras")
 
     val_loss_history = history.history['val_loss']
     loss_history = history.history['loss']
 
     print("evaluate: ")
-    best_model.evaluate(X_train, y_train)
+    model.evaluate(X_train, y_train)
 
     print("Menor val_loss alcançado:", min(val_loss_history))
     print("Menor loss de treinamento alcançado:", min(loss_history))
 
-    y_predict = best_model.predict(X_test)
+    y_predict = model.predict(X_test)
     y_predict = y_predict.flatten()
 
     
